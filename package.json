@@ -27,7 +27,8 @@
     "chalk": "1.0.0",
     "morgan": "1.5.2",
     "jsonwebtoken": "5.0.0",
-    "express-jwt": "3.0.0"
+    "express-jwt": "3.0.0",
+    "node-validator": "0.1.13"
   },
   "devDependencies": {
   }
