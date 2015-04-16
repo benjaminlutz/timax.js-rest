@@ -1,5 +1,6 @@
 {
   "environment": "dev",
   "port": 3000,
-  "secret": "pL3aS3_ChAnG3_M3!"
+  "jwtSecret": "pL3aS3_ChAnG3_M3!",
+  "jwtExpiryTimeInMinutes": 600
 }

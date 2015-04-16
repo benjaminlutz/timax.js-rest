@@ -10,7 +10,7 @@ var jwt = require('jsonwebtoken'),
  * @param res the response.
  */
 exports.login = function (req, res) {
-    var token = jwt.sign({ name: 'Hans Wurst' }, conf.secret, { expiresInMinutes: 60 * 5 });
+    var token = jwt.sign({name: 'Hans Wurst'}, conf.jwtSecret, {expiresInMinutes: conf.jwtExpiryTimeInMinutes});
 
     res.send(token);
 };
