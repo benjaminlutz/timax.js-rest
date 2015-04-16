@@ -9,7 +9,6 @@ app.use(express.static(__dirname + '/static'));
 
 // load routes and controllers
 var normalizedPath = require('path').join(__dirname, 'routes');
-
 require('fs').readdirSync(normalizedPath).forEach(function (file) {
     require('./routes/' + file)(app);
 });
