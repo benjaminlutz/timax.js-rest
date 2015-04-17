@@ -87,4 +87,27 @@ UserSchema.statics.findByEMail = function (email, cb) {
     return this.findOne({email: email}, cb);
 };
 
+/**
+ * Tries to authenticate the user by given email and password.
+ *
+ * @param email the e-mail address.
+ * @param password the password.
+ * @param cb the callback.
+ */
+UserSchema.statics.authenticate = function (email, password, cb) {
+    this.findByEMail(email, function (err, user) {
+        if (err || user === null) {
+            cb(err || true);
+        } else {
+            user.comparePassword(password, function (err, isMatch) {
+                if (err || isMatch === false) {
+                    cb(err || true);
+                } else {
+                    cb(null, user);
+                }
+            });
+        }
+    });
+};
+
 module.exports = mongoose.model('User', UserSchema);
