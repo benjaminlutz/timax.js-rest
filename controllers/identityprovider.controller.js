@@ -17,18 +17,33 @@ exports.logon = function (req, res) {
 
     User.findByEMail(email, function (err, user) {
         if (err) {
-            return res.sendStatus(500);
+            return res.sendStatus(401);
         } else {
             console.log(user);
-            var token = jwt.sign({
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName
-            }, conf.jwtSecret, {
-                expiresInMinutes: conf.jwtExpiryTimeInMinutes
-            });
 
-            res.send(token);
+            if (user) {
+                user.comparePassword(password, function (err, isMatch) {
+                    if (err) {
+                        return res.sendStatus(401);
+                    } else {
+                        if (isMatch) {
+                            var token = jwt.sign({
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }, conf.jwtSecret, {
+                                expiresInMinutes: conf.jwtExpiryTimeInMinutes
+                            });
+
+                            res.send(token);
+                        } else {
+                            return res.sendStatus(401);
+                        }
+                    }
+                });
+            } else {
+                return res.sendStatus(401);
+            }
         }
     });
 };
