@@ -7,7 +7,7 @@
  * @param res the response.
  */
 exports.getDummyText = function (req, res) {
-    res.send({
+    res.json({
         hello: 'world'
     });
 };

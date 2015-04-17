@@ -1,26 +1,47 @@
 'use strict';
 
 var jwt = require('jsonwebtoken'),
-    conf = require('../config.json');
+    conf = require('../config.json'),
+    mongoose = require('mongoose'),
+    User = mongoose.model('User');
 
 /**
- * Tries to login the given user and creates a token.
+ * Tries to logon the given user and creates a token.
  *
  * @param req the request.
  * @param res the response.
  */
-exports.login = function (req, res) {
+exports.logon = function (req, res) {
     var email = req.body.email,
         password = req.body.password;
 
-    var user = {
-        email: email,
-        password: password
-    };
+    User.findByEMail(email, function (err, user) {
+        if (err) {
+            return res.sendStatus(500);
+        } else {
+            console.log(user);
+            var token = jwt.sign({
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName
+            }, conf.jwtSecret, {
+                expiresInMinutes: conf.jwtExpiryTimeInMinutes
+            });
 
-    console.log(user);
+            res.send(token);
+        }
+    });
+};
 
-    var token = jwt.sign(user, conf.jwtSecret, {expiresInMinutes: conf.jwtExpiryTimeInMinutes});
+// TODO delete me later
+exports.create = function (req, res) {
+    var user = new User(req.body);
 
-    res.send(token);
+    user.save(function (err, user) {
+        if (err) {
+            return res.sendStatus(500);
+        } else {
+            res.json(user);
+        }
+    });
 };

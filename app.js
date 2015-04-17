@@ -6,7 +6,21 @@ var express = require('express'),
     fs = require('fs'),
     chalk = require('chalk'),
     logger = require('morgan'),
-    conf = require('./config.json');
+    conf = require('./config.json'),
+    mongoose = require('mongoose');
+
+// Bootstrap db connection
+var db = mongoose.connect(conf.mongoDB, function (err) {
+    if (err) {
+        console.error(chalk.red('Could not connect to MongoDB!'));
+        console.log(chalk.red(err));
+    }
+});
+
+// load all mongoose models
+fs.readdirSync(path.join(__dirname, 'models')).forEach(function (file) {
+    require('./models/' + file);
+});
 
 // init express
 var app = express();
@@ -47,7 +61,7 @@ app.use(function (req, res, next) {
 if (conf.environment === 'dev') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.send({
+        res.json({
             error: {
                 message: err.message,
                 error: err
@@ -59,7 +73,7 @@ if (conf.environment === 'dev') {
 // configure production error handler (no stacktraces leaked to user)
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.send({
+    res.json({
         error: {
             message: err.message
         }
