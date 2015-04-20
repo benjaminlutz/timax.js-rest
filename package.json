@@ -21,6 +21,10 @@
   "bugs": {
   	"url": "https://github.com/benjaminlutz/timax.js-rest/issues"
   },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
   "dependencies": {
     "express": "4.12.3",
     "body-parser": "1.12.3",

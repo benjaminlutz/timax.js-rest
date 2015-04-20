@@ -17,6 +17,7 @@ exports.logon = function (req, res) {
 
     User.authenticate(email, password, function (err, user) {
         if (err) {
+            req.log.warn('Invalid attempt to logon for user: %s', email);
             return res.sendStatus(401);
         } else {
             var token = jwt.sign({
