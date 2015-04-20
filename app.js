@@ -4,16 +4,17 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     path = require('path'),
     fs = require('fs'),
-    chalk = require('chalk'),
-    logger = require('morgan'),
-    conf = require('./config.json'),
+    bunyan = require('bunyan'),
+    config = require('./config'),
     mongoose = require('mongoose');
 
+// create logger
+var log = bunyan.createLogger(config.logger);
+
 // Bootstrap db connection
-var db = mongoose.connect(conf.mongoDB, function (err) {
+var db = mongoose.connect(config.mongoDB, function (err) {
     if (err) {
-        console.error(chalk.red('Could not connect to MongoDB!'));
-        console.log(chalk.red(err));
+        log.info(err, 'Could not connect to MongoDB!');
     }
 });
 
@@ -25,8 +26,8 @@ fs.readdirSync(path.join(__dirname, 'models')).forEach(function (file) {
 // init express
 var app = express();
 
-// configure request logger
-app.use(logger(conf.environment));
+// configure logger
+app.use(require('express-bunyan-logger')(config.logger));
 
 // configure body parser
 app.use(bodyParser.json());
@@ -58,7 +59,7 @@ app.use(function (req, res, next) {
 });
 
 // configure development error handler (will print stacktrace)
-if (conf.environment === 'dev') {
+if (config.environment === 'dev') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.json({
@@ -81,9 +82,9 @@ app.use(function (err, req, res, next) {
 });
 
 // start server
-var server = app.listen(conf.port, function () {
+var server = app.listen(config.port, function () {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log(chalk.green('timax.js REST server listening at http://%s:%s', host, port));
+    log.info('timax.js REST server listening at http://%s:%s', host, port);
 });

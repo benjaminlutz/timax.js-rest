@@ -1,7 +1,7 @@
 'use strict';
 
 var jwt = require('jsonwebtoken'),
-    conf = require('../config.json'),
+    config = require('../config'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
 
@@ -23,8 +23,8 @@ exports.logon = function (req, res) {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName
-            }, conf.jwtSecret, {
-                expiresInMinutes: conf.jwtExpiryTimeInMinutes
+            }, config.jwtSecret, {
+                expiresInMinutes: config.jwtExpiryTimeInMinutes
             });
 
             res.send(token);
