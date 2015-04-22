@@ -79,6 +79,10 @@ module.exports = function (grunt) {
             options: {
                 src: './build/reports/coverage/lcov.info',
                 force: true
+            },
+            travis: {
+                // Target-specific LCOV coverage file
+                src: './build/reports/coverage/lcov.info'
             }
         }
     });
