@@ -31,13 +31,6 @@ module.exports = function (grunt) {
             build: watchFiles.serverJS
         },
 
-        // configure bunyan
-        bunyan: {
-            strict: false, // prevent non-bunyan logs from being outputted
-            level: 'trace', // show all the things!
-            output: 'short' // least verbose
-        },
-
         // configure nodemon
         nodemon: {
             dev: {
@@ -51,10 +44,8 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.loadNpmTasks('grunt-bunyan');
-
     grunt.loadNpmTasks('grunt-nodemon');
 
-    grunt.registerTask('default', ['jshint', 'bunyan', 'nodemon']);
+    grunt.registerTask('default', ['jshint', 'nodemon']);
 
 };

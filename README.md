@@ -13,6 +13,12 @@ Make sure you have installed all these prerequisites on your machine.
 $ sudo npm install -g grunt-cli
 ```
 
+* bunyan - If you want a nice formatted log output, install and use the [bunyan](https://github.com/trentm/node-bunyan) CLI tool:
+
+```
+$ sudo npm install -g bunyan
+```
+
 ## Install
 To install Node.js dependencies you're going to npm, in the application folder run this in the command-line:
 
@@ -29,11 +35,19 @@ config.js
 
 file.
 
+*Important:* Please change the jwtSecret before you start the application for the first time!
+
 ## Start the application
 If everything is installed and configured, just type the following command to start the application:
 
 ```
-$ npm install
+$ grunt
+```
+
+Or if you want a nice formatted log output, then use the bunyan CLI tool:
+
+```
+$ grunt | bunyan
 ```
 
 ## License
