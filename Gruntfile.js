@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
 
     var watchFiles = {
-        serverJS: ['Gruntfile.js', 'app.js', 'controllers/**/*.js', 'models/**/*.js', 'routes/**/*.js']
+        serverJS: ['Gruntfile.js', 'app.js', 'config.js', 'controllers/**/*.js', 'models/**/*.js', 'routes/**/*.js']
     };
 
     grunt.initConfig({
@@ -39,13 +39,26 @@ module.exports = function (grunt) {
                     watch: watchFiles.serverJS
                 }
             }
+        },
+
+        // configure concurrent
+        concurrent: {
+            default: ['nodemon', 'watch'],
+            options: {
+                logConcurrentOutput: true,
+                limit: 10
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
+    grunt.loadNpmTasks('grunt-contrib-watch');
+
     grunt.loadNpmTasks('grunt-nodemon');
 
-    grunt.registerTask('default', ['jshint', 'nodemon']);
+    grunt.loadNpmTasks('grunt-concurrent');
+
+    grunt.registerTask('default', ['concurrent:default']);
 
 };
