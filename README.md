@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/benjaminlutz/timax.js-rest.svg)](https://travis-ci.org/benjaminlutz/timax.js-rest)
+
 # timax.js-rest
 timax.js - the REST services
 
