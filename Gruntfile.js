@@ -48,6 +48,30 @@ module.exports = function (grunt) {
                 logConcurrentOutput: true,
                 limit: 10
             }
+        },
+
+        // configure jasmine
+        jasmine_node: {
+            options: {
+                coverage: {
+                    reportDir: './build/reports/coverage/'
+                },
+                forceExit: true,
+                specFolders: ['test'],
+                match: '.',
+                matchall: false,
+                extensions: 'js',
+                specNameMatcher: 'spec',
+                captureExceptions: true,
+                showColors: true,
+                junitreport: {
+                    report: true,
+                    savePath: './build/reports/jasmine/',
+                    useDotNotation: true,
+                    consolidate: true
+                }
+            },
+            src: watchFiles.serverJS
         }
     });
 
@@ -59,6 +83,10 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-concurrent');
 
+    grunt.loadNpmTasks('grunt-jasmine-node-coverage');
+
     grunt.registerTask('default', ['concurrent:default']);
+
+    grunt.registerTask('test', ['jasmine_node']);
 
 };
