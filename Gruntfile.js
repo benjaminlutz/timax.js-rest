@@ -72,6 +72,14 @@ module.exports = function (grunt) {
                 }
             },
             src: watchFiles.serverJS
+        },
+
+        // configure coveralls
+        coveralls: {
+            options: {
+                src: './build/reports/coverage/lcov.info',
+                force: true
+            }
         }
     });
 
@@ -84,6 +92,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-concurrent');
 
     grunt.loadNpmTasks('grunt-jasmine-node-coverage');
+
+    grunt.loadNpmTasks('grunt-coveralls');
 
     grunt.registerTask('default', ['concurrent:default']);
 

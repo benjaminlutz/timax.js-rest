@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/benjaminlutz/timax.js-rest.svg)](https://travis-ci.org/benjaminlutz/timax.js-rest)
-[![Dependencies Status](https://david-dm.org/benjaminlutz/timax.js-rest.svg)](https://david-dm.org/meanjs/mean)
+[![Dependency Status](https://david-dm.org/benjaminlutz/timax.js-rest/status.png)](https://david-dm.org/benjaminlutz/timax.js-rest)
+[![Dev Dependency Status](https://david-dm.org/benjaminlutz/timax.js-rest/dev-status.png)](https://david-dm.org/benjaminlutz/timax.js-rest)
 
 # timax.js-rest
 timax.js - the REST services
