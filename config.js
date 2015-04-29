@@ -5,14 +5,14 @@ var config = {};
  *
  * @type {string} dev or production.
  */
-config.environment = 'dev';
+config.environment =  process.env.NODE_ENV || 'dev';
 
 /**
  * The port on which the server will listen.
  *
  * @type {number} as the easiest choice, take a port number > 1024.
  */
-config.port = 3000;
+config.port = process.env.PORT || 3000;
 
 /**
  * The secret which will be used for the hashing of the JSON Web Token.

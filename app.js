@@ -88,3 +88,6 @@ var server = app.listen(config.port, function () {
 
     log.info('timax.js REST server listening at http://%s:%s', host, port);
 });
+
+// Expose app
+exports = module.exports = app;
