@@ -37,8 +37,38 @@ describe('Identityprovider Route', function () {
                 })
                 .expect(200)
                 .end(function (err, response) {
+                    expect(err).toBeNull();
+
                     // the JWT is always different...
-                    expect(response.text.length).toBeGreaterThan(10);
+                    expect(response.text).toBeDefined();
+                    done();
+                });
+        });
+
+        it('should NOT be possible to logon with correct e-mail but wrong password', function (done) {
+            agent.post('/idp')
+                .send({
+                    email: 'test@test.com',
+                    password: '12test456'
+                })
+                .expect(401)
+                .end(function (err, response) {
+                    expect(err).toBeNull();
+                    expect(response.text).toBe('Unauthorized');
+                    done();
+                });
+        });
+
+        it('should NOT be possible to logon with wrong e-mail but correct password', function (done) {
+            agent.post('/idp')
+                .send({
+                    email: 'test123@test.com',
+                    password: '12test'
+                })
+                .expect(401)
+                .end(function (err, response) {
+                    expect(err).toBeNull();
+                    expect(response.text).toBe('Unauthorized');
                     done();
                 });
         });
