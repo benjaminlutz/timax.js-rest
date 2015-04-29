@@ -50,6 +50,13 @@ module.exports = function (grunt) {
             }
         },
 
+        // configure test environment
+        env: {
+            test: {
+                NODE_ENV: 'test'
+            }
+        },
+
         // configure jasmine
         jasmine_node: {
             options: {
@@ -88,21 +95,14 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-
     grunt.loadNpmTasks('grunt-contrib-watch');
-
     grunt.loadNpmTasks('grunt-nodemon');
-
     grunt.loadNpmTasks('grunt-concurrent');
-
     grunt.loadNpmTasks('grunt-jasmine-node-coverage');
-
     grunt.loadNpmTasks('grunt-coveralls');
+    grunt.loadNpmTasks('grunt-env');
 
     grunt.registerTask('default', ['concurrent:default']);
-
-    grunt.registerTask('test', ['jasmine_node']);
-
-    grunt.registerTask('travis', ['jasmine_node']);
-
+    grunt.registerTask('test', ['env:test', 'jasmine_node']);
+    grunt.registerTask('travis', ['env:test', 'jasmine_node']);
 };

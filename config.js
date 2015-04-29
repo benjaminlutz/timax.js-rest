@@ -39,6 +39,11 @@ config.jwtExpiryTimeInMinutes = 600;
  */
 config.mongoDB = 'mongodb://localhost/timaxjs';
 
+// use test database if app started in test environment
+if (config.environment === 'test') {
+    config.mongoDB = config.mongoDB + '-test';
+}
+
 /**
  * The configuration of the logger.
  *

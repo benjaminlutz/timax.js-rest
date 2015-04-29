@@ -44,6 +44,7 @@
     "grunt-concurrent": "1.0.0",
     "grunt-jasmine-node-coverage": "0.4.1",
     "grunt-coveralls": "1.0.0",
+    "grunt-env": "0.4.4",
     "supertest": "0.15.0"
   }
 }
