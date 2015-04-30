@@ -8,6 +8,6 @@
  */
 exports.getDummyText = function (req, res) {
     res.json({
-        hello: 'world'
+        hello: req.principal.firstName
     });
 };

@@ -1,7 +1,6 @@
 'use strict';
 
-var jwt = require('jsonwebtoken'),
-    config = require('../config'),
+var jwtHelper = require('../helpers/jwt.helper'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
 
@@ -20,15 +19,7 @@ exports.logon = function (req, res) {
             req.log.warn('Invalid attempt to logon for user: %s', email);
             return res.sendStatus(401);
         } else {
-            var token = jwt.sign({
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName
-            }, config.jwtSecret, {
-                expiresInMinutes: config.jwtExpiryTimeInMinutes
-            });
-
-            res.send(token);
+            res.send(jwtHelper.createToken(user));
         }
     });
 };

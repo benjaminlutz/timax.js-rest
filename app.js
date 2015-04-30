@@ -6,6 +6,7 @@ var express = require('express'),
     fs = require('fs'),
     bunyan = require('bunyan'),
     config = require('./config'),
+    jwt = require('express-jwt'),
     mongoose = require('mongoose');
 
 // create logger
@@ -41,6 +42,26 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', '*, X-Requested-With, X-Prototype-Version, X-CSRF-Token, Content-Type, Authorization');
     next();
+});
+
+// configure JSON Web Token middleware
+app.use(jwt({
+    secret: config.jwtSecret,
+    userProperty: 'principal'
+}).unless({
+    path: ['/idp', '/']
+}));
+
+// JSON Web Token middleware error behaviour
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({
+            error: {
+                message: err.message,
+                error: err
+            }
+        });
+    }
 });
 
 // serve static content
