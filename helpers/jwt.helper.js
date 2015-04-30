@@ -12,7 +12,8 @@ exports.createToken = function (user) {
     return jwt.sign({
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        role: user.role
     }, config.jwtSecret, {
         expiresInMinutes: config.jwtExpiryTimeInMinutes
     });

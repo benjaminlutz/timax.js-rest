@@ -49,10 +49,10 @@ app.use(jwt({
     secret: config.jwtSecret,
     userProperty: 'principal'
 }).unless({
-    path: ['/idp', '/']
+    path: ['/idp', '/idp/new', '/']
 }));
 
-// JSON Web Token middleware error behaviour
+// configure JSON Web Token middleware error behaviour
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({

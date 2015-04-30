@@ -12,7 +12,8 @@ describe('BookingRoute', function () {
             var user = {
                     email: 'hans.wurst@cma.com',
                     firstName: 'Hans',
-                    lastName: 'Wurst'
+                    lastName: 'Wurst',
+                    role: 'user'
                 },
                 token = jwtHelper.createToken(user);
 
