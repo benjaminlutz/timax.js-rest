@@ -45,6 +45,22 @@ describe('Identityprovider Route', function () {
                 });
         });
 
+        it('should be possible to logon with a case insensitive e-mail address', function (done) {
+            agent.post('/idp')
+                .send({
+                    email: 'TEST@TesT.CoM',
+                    password: '12test'
+                })
+                .expect(200)
+                .end(function (err, response) {
+                    expect(err).toBeNull();
+
+                    // the JWT is always different...
+                    expect(response.text).toBeDefined();
+                    done();
+                });
+        });
+
         it('should NOT be possible to logon with correct e-mail but wrong password', function (done) {
             agent.post('/idp')
                 .send({
@@ -72,5 +88,6 @@ describe('Identityprovider Route', function () {
                     done();
                 });
         });
+
     });
 });

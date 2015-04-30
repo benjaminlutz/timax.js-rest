@@ -77,14 +77,14 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
 };
 
 /**
- * Tries to find an user by his e-mail address.
+ * Tries to find an user by his e-mail address (case insensitive!).
  *
  * @param email the e-mail address.
  * @param cb the callback.
  * @returns {Query|*} the function.
  */
 UserSchema.statics.findByEMail = function (email, cb) {
-    return this.findOne({email: email}, cb);
+    return this.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}}, cb);
 };
 
 /**
