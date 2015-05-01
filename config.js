@@ -1,68 +1,55 @@
-var config = {};
+'use strict';
+
+var _ = require('lodash');
+
+var config = {},
+    environment = process.env.NODE_ENV || 'dev';
 
 /**
- * Defines the environment or stage in which the application runs.
+ * Global configuration for all environments.
  *
- * @type {string} dev or production.
+ * Values can be overwritten by environment specific configurations.
  */
-config.environment =  process.env.NODE_ENV || 'dev';
-
-/**
- * The port on which the server will listen.
- *
- * @type {number} as the easiest choice, take a port number > 1024.
- */
-config.port = process.env.PORT || 3000;
-
-/**
- * The secret which will be used for the hashing of the JSON Web Token.
- *
- * Please change it before you start the application for the first time!
- *
- * @type {string} the secret.
- */
-config.jwtSecret = 'pL3aS3_ChAnG3_M3!';
-
-/**
- * The expiry time of the JSON Web Token in minutes.
- *
- * @type {number} the expiry time in minutes.
- */
-config.jwtExpiryTimeInMinutes = 600;
-
-/**
- * The connection string of the mongoDB.
- *
- * See http://docs.mongodb.org/manual/reference/connection-string/ for further information.
- *
- * @type {string} the mongoDB connection string.
- */
-config.mongoDB = 'mongodb://localhost/timaxjs';
-
-// use test database if app started in test environment
-if (config.environment === 'test') {
-    config.mongoDB = config.mongoDB + '-test';
-}
-
-/**
- * The configuration of the logger.
- *
- * See https://github.com/trentm/node-bunyan/blob/master/README.md for further information.
- *
- * @type {{name: string, streams: *[]}} logger config object.
- */
-config.logger = {
-    name: 'timax.js-rest',
-    streams: [
-        {
-            level: 'info',
-            stream: process.stdout
-        },
-        {
-            level: 'error',
-            path: 'timax.js-rest-error.log'
-        }
-    ]
+var global_config = {
+    environment: environment,
+    port: 3000,
+    mongoDB: 'mongodb://localhost/timaxjs',
+    jwtSecret: 'pL3aS3_ChAnG3_M3!',
+    jwtExpiryTimeInMinutes: 600,
+    logger: {
+        name: 'timax.js-rest',
+        streams: [
+            {
+                level: 'info',
+                stream: process.stdout
+            },
+            {
+                level: 'error',
+                path: 'timax.js-rest-error.log'
+            }
+        ]
+    }
 };
 
-module.exports = config;
+/**
+ * Environment specific configuration for dev environment.
+ */
+config.dev = _.extend({}, global_config, {
+
+});
+
+/**
+ * Environment specific configuration for test environment.
+ */
+config.test = _.extend({}, global_config, {
+    mongoDB: 'mongodb://localhost/timaxjs-test'
+});
+
+/**
+ * Environment specific configuration for prod environment.
+ */
+config.prod = _.extend({}, global_config, {
+
+});
+
+module.exports = config[environment];

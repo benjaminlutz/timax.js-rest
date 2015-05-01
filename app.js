@@ -10,16 +10,18 @@ var Q = require('bluebird'),
     jwt = require('express-jwt'),
     mongoose = require('mongoose');
 
-// global promisifies
+// global promisify
 Q.promisifyAll(mongoose);
 
 // create logger
 var log = bunyan.createLogger(config.logger);
 
-// Bootstrap db connection
+// bootstrap db connection
 mongoose.connect(config.mongoDB, function (err) {
     if (err) {
         log.info(err, 'Could not connect to MongoDB!');
+    } else {
+        log.info('Connected to: ' + config.mongoDB);
     }
 });
 
@@ -48,7 +50,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-// configure JSON Web Token middleware
+// configure JSON Web Token (JWT) middleware
 app.use(jwt({
     secret: config.jwtSecret,
     userProperty: 'principal'
@@ -56,7 +58,7 @@ app.use(jwt({
     path: ['/idp', '/idp/new', '/']
 }));
 
-// configure JSON Web Token middleware error behaviour
+// configure JSON Web Token (JWT) middleware error handler
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({
@@ -114,5 +116,5 @@ var server = app.listen(config.port, function () {
     log.info('timax.js REST server listening at http://%s:%s', host, port);
 });
 
-// Expose app
-exports = module.exports = app;
+// expose app
+module.exports = app;
