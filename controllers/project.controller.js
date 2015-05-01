@@ -49,5 +49,7 @@ exports.create = function (req, res) {
  * @param next the next callback.
  */
 exports.addUserToProject = function (req, res, next) {
-    req.log.info(req);
+    res.json({
+        projectId: req.params.projectId
+    });
 };
