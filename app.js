@@ -19,7 +19,7 @@ var log = bunyan.createLogger(config.logger);
 // bootstrap db connection
 mongoose.connect(config.mongoDB, function (err) {
     if (err) {
-        log.info(err, 'Could not connect to MongoDB!');
+        log.error(err, 'Could not connect to MongoDB!');
     } else {
         log.info('Connected to: ' + config.mongoDB);
     }
