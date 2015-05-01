@@ -59,5 +59,19 @@ describe('Project resource', function () {
                     });
                 });
         });
+
+        it('should NOT be possible to save an project without project_id', function (done) {
+            agent.post('/project')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .send({
+                    description: 'The test project III'
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Project validation failed');
+                    done();
+                });
+        });
     });
 });
