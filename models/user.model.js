@@ -1,6 +1,7 @@
 'use strict';
 
-var mongoose = require('mongoose'),
+var P = require('bluebird'),
+    mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10;
@@ -97,21 +98,24 @@ UserSchema.statics.findByEMail = function (email, cb) {
  *
  * @param email the e-mail address.
  * @param password the password.
- * @param cb the callback.
  */
-UserSchema.statics.authenticate = function (email, password, cb) {
-    this.findByEMail(email, function (err, user) {
-        if (err || user === null) {
-            cb(err || true);
-        } else {
-            user.comparePassword(password, function (err, isMatch) {
-                if (err || isMatch === false) {
-                    cb(err || true);
-                } else {
-                    cb(null, user);
-                }
-            });
-        }
+UserSchema.statics.authenticate = function (email, password) {
+    var me = this;
+
+    return new P(function (resolve, reject) {
+        me.findByEMail(email, function (err, user) {
+            if (err || user === null) {
+                reject(err);
+            } else {
+                user.comparePassword(password, function (err, isMatch) {
+                    if (err || isMatch === false) {
+                        reject(err);
+                    } else {
+                        resolve(user);
+                    }
+                });
+            }
+        });
     });
 };
 

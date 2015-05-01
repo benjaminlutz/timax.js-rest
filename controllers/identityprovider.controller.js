@@ -14,14 +14,14 @@ exports.logon = function (req, res) {
     var email = req.body.email,
         password = req.body.password;
 
-    User.authenticate(email, password, function (err, user) {
-        if (err) {
+    User.authenticate(email, password)
+        .then(function (user) {
+            res.send(jwtHelper.createToken(user));
+        })
+        .catch(function (e) {
             req.log.warn('Invalid attempt to logon for user: %s', email);
             return res.sendStatus(401);
-        } else {
-            res.send(jwtHelper.createToken(user));
-        }
-    });
+        });
 };
 
 // TODO delete me later
