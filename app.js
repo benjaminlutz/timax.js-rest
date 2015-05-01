@@ -1,6 +1,7 @@
 'use strict';
 
-var express = require('express'),
+var Q = require('bluebird'),
+    express = require('express'),
     bodyParser = require('body-parser'),
     path = require('path'),
     fs = require('fs'),
@@ -9,11 +10,14 @@ var express = require('express'),
     jwt = require('express-jwt'),
     mongoose = require('mongoose');
 
+// global promisifies
+Q.promisifyAll(mongoose);
+
 // create logger
 var log = bunyan.createLogger(config.logger);
 
 // Bootstrap db connection
-var db = mongoose.connect(config.mongoDB, function (err) {
+mongoose.connect(config.mongoDB, function (err) {
     if (err) {
         log.info(err, 'Could not connect to MongoDB!');
     }

@@ -1,6 +1,6 @@
 'use strict';
 
-var P = require('bluebird'),
+var Q = require('bluebird'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt'),
@@ -78,7 +78,7 @@ UserSchema.pre('save', function (next) {
 UserSchema.methods.comparePassword = function (candidatePassword) {
     var me = this;
 
-    return new P(function (resolve, reject) {
+    return new Q(function (resolve, reject) {
         bcrypt.compare(candidatePassword, me.password, function (err, isMatch) {
             if (err || isMatch === false) {
                 reject(err);
@@ -96,17 +96,7 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
  * @returns {*} a promise.
  */
 UserSchema.statics.findByEMail = function (email) {
-    var me = this;
-
-    return new P(function (resolve, reject) {
-        me.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}}, function (err, user) {
-            if (err || user === undefined) {
-                reject(err);
-            } else {
-                resolve(user);
-            }
-        });
-    });
+    return this.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}});
 };
 
 module.exports = mongoose.model('User', UserSchema);
