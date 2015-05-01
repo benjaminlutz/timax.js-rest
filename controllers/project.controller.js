@@ -26,7 +26,7 @@ exports.list = function (req, res, next) {
  * @param req the request.
  * @param res the response.
  */
-exports.create = function (req, res, next) {
+exports.create = function (req, res) {
     var project = new Project(req.body);
 
     project.saveAsync()
@@ -39,4 +39,15 @@ exports.create = function (req, res, next) {
                 error: err
             });
         });
+};
+
+/**
+ * Adds an user to a project.
+ *
+ * @param req the request.
+ * @param res the response.
+ * @param next the next callback.
+ */
+exports.addUserToProject = function (req, res, next) {
+    req.log.info(req);
 };
