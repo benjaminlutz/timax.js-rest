@@ -35,6 +35,8 @@ exports.create = function (req, res, next) {
         })
         .catch(function (err) {
             req.log.error(err, 'Could not create project');
-            next(err);
+            res.status(400).send({
+                error: err
+            });
         });
 };

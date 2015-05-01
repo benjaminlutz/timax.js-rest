@@ -88,6 +88,7 @@ app.use(function (req, res, next) {
 // configure development error handler (will print stacktrace)
 if (config.environment === 'dev') {
     app.use(function (err, req, res, next) {
+        log.error(err);
         res.status(err.status || 500);
         res.json({
             error: {
@@ -100,6 +101,7 @@ if (config.environment === 'dev') {
 
 // configure production error handler (no stacktraces leaked to user)
 app.use(function (err, req, res, next) {
+    log.error(err);
     res.status(err.status || 500);
     res.json({
         error: {
