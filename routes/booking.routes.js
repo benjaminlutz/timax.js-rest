@@ -5,5 +5,8 @@ var mustBe = require('../helpers/authorization.helper'),
 
 module.exports = function (app) {
 
+    /**
+     * GET /booking
+     */
     app.route('/booking').get(mustBe.atLeastUser, bookingController.getDummyText);
 };

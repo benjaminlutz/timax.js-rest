@@ -40,4 +40,24 @@ describe('Project resource', function () {
                 });
         });
     });
+
+    describe('POST /project', function () {
+        it('should create a new project', function (done) {
+            agent.post('/project')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .send({
+                    project_id: 'PR456',
+                    description: 'The test project II'
+                })
+                .expect(200)
+                .end(function (err, response) {
+                    expect(err).toBeNull();
+
+                    Project.find().then(function (projects) {
+                        expect(projects.length).toBe(2);
+                        done();
+                    });
+                });
+        });
+    });
 });

@@ -5,5 +5,13 @@ var mustBe = require('../helpers/authorization.helper'),
 
 module.exports = function (app) {
 
-    app.route('/project').get(mustBe.atLeastManager, projectController.getAllProjects);
+    /**
+     * GET /project
+     */
+    app.route('/project').get(mustBe.atLeastManager, projectController.list);
+
+    /**
+     * POST /project
+     */
+    app.route('/project').post(mustBe.atLeastManager, projectController.create);
 };

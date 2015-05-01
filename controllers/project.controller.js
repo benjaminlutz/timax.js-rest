@@ -9,13 +9,34 @@ var mongoose = require('mongoose'),
  * @param req the request.
  * @param res the response.
  */
-exports.getAllProjects = function (req, res) {
+exports.list = function (req, res) {
     Project.find().sort('project_id')
         .then(function (projects) {
             res.json(projects);
         })
         .catch(function (err) {
             req.log.error(err, 'Could not load all projects');
-            return res.sendStatus(400);
+            res.sendStatus(400);
+        });
+};
+
+/**
+ * Creates a new project.
+ *
+ * @param req the request.
+ * @param res the response.
+ */
+exports.create = function (req, res) {
+    var project = new Project(req.body);
+
+    project.saveAsync()
+        .spread(function (savedProject, numAffected) {
+            res.json(savedProject);
+        })
+        .catch(function (err) {
+            req.log.error(err, 'Could not create project');
+            res.status(400).send({
+                error: err
+            });
         });
 };
