@@ -82,8 +82,9 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
         bcrypt.compare(candidatePassword, me.password, function (err, isMatch) {
             if (err || isMatch === false) {
                 reject(err);
+            } else {
+                resolve();
             }
-            resolve();
         });
     });
 };
@@ -92,35 +93,17 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
  * Tries to find an user by his e-mail address (case insensitive!).
  *
  * @param email the e-mail address.
- * @param cb the callback.
- * @returns {Query|*} the function.
- */
-UserSchema.statics.findByEMail = function (email, cb) {
-    return this.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}}, cb);
-};
-
-/**
- * Tries to authenticate the user by given email and password.
- *
- * @param email the e-mail address.
- * @param password the password.
  * @returns {*} a promise.
  */
-UserSchema.statics.authenticate = function (email, password) {
+UserSchema.statics.findByEMail = function (email) {
     var me = this;
 
     return new P(function (resolve, reject) {
-        me.findByEMail(email, function (err, user) {
-            if (err || user === null) {
+        me.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}}, function (err, user) {
+            if (err || user === undefined) {
                 reject(err);
             } else {
-                user.comparePassword(password)
-                    .then(function () {
-                        resolve(user);
-                    })
-                    .catch(function (err) {
-                        reject(err);
-                    });
+                resolve(user);
             }
         });
     });
