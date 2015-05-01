@@ -12,6 +12,7 @@ function errorFunc(res) {
         }
     });
 }
+
 /**
  * Authorization middleware which checks that the user has at least the role user.
  *
