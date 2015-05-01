@@ -73,12 +73,18 @@ UserSchema.pre('save', function (next) {
  * Compares the given clear text password with the hashed password of the model.
  *
  * @param candidatePassword the clear text password.
- * @param cb the callback.
+ * @returns {*} a promise.
  */
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
+UserSchema.methods.comparePassword = function (candidatePassword) {
+    var me = this;
+
+    return new P(function (resolve, reject) {
+        bcrypt.compare(candidatePassword, me.password, function (err, isMatch) {
+            if (err || isMatch === false) {
+                reject(err);
+            }
+            resolve();
+        });
     });
 };
 
@@ -98,6 +104,7 @@ UserSchema.statics.findByEMail = function (email, cb) {
  *
  * @param email the e-mail address.
  * @param password the password.
+ * @returns {*} a promise.
  */
 UserSchema.statics.authenticate = function (email, password) {
     var me = this;
@@ -107,13 +114,13 @@ UserSchema.statics.authenticate = function (email, password) {
             if (err || user === null) {
                 reject(err);
             } else {
-                user.comparePassword(password, function (err, isMatch) {
-                    if (err || isMatch === false) {
-                        reject(err);
-                    } else {
+                user.comparePassword(password)
+                    .then(function () {
                         resolve(user);
-                    }
-                });
+                    })
+                    .catch(function (err) {
+                        reject(err);
+                    });
             }
         });
     });
