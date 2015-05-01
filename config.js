@@ -1,8 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
-
-var config = {},
+var _ = require('lodash'),
     environment = process.env.NODE_ENV || 'dev';
 
 /**
@@ -34,22 +32,30 @@ var global_config = {
 /**
  * Environment specific configuration for dev environment.
  */
-config.dev = _.extend({}, global_config, {
-
-});
+var dev_config = {};
 
 /**
  * Environment specific configuration for test environment.
  */
-config.test = _.extend({}, global_config, {
+var test_config = {
     mongoDB: 'mongodb://localhost/timaxjs-test'
-});
+};
 
 /**
  * Environment specific configuration for prod environment.
  */
-config.prod = _.extend({}, global_config, {
+var prod_config = {};
 
-});
+/**
+ * Build the config object.
+ */
+var config = {
+    dev: _.extend({}, global_config, dev_config),
+    test: _.extend({}, global_config, test_config),
+    prod: _.extend({}, global_config, prod_config)
+};
 
+/**
+ * Return the config for the current environment.
+ */
 module.exports = config[environment];
