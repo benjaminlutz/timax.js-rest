@@ -4,5 +4,5 @@ var identityproviderController = require('../controllers/identityprovider.contro
 
 module.exports = function (app) {
 
-    app.route('/idp').post(identityproviderController.logon);
+    app.route('/identityprovider').post(identityproviderController.logon);
 };

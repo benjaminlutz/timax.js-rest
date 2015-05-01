@@ -8,7 +8,7 @@ var request = require('supertest'),
 
 var user;
 
-describe('Identityprovider Route', function () {
+describe('Identityprovider resource', function () {
 
     beforeEach(function (done) {
         user = new User({
@@ -28,9 +28,9 @@ describe('Identityprovider Route', function () {
         done();
     });
 
-    describe('POST /idp', function () {
+    describe('POST /identityprovider', function () {
         it('should be possible to logon and to create a valid token', function (done) {
-            agent.post('/idp')
+            agent.post('/identityprovider')
                 .send({
                     email: 'test@test.com',
                     password: '12test'
@@ -46,7 +46,7 @@ describe('Identityprovider Route', function () {
         });
 
         it('should be possible to logon with a case insensitive e-mail address', function (done) {
-            agent.post('/idp')
+            agent.post('/identityprovider')
                 .send({
                     email: 'TEST@TesT.CoM',
                     password: '12test'
@@ -62,7 +62,7 @@ describe('Identityprovider Route', function () {
         });
 
         it('should NOT be possible to logon with correct e-mail but wrong password', function (done) {
-            agent.post('/idp')
+            agent.post('/identityprovider')
                 .send({
                     email: 'test@test.com',
                     password: '12test456'
@@ -76,7 +76,7 @@ describe('Identityprovider Route', function () {
         });
 
         it('should NOT be possible to logon with wrong e-mail but correct password', function (done) {
-            agent.post('/idp')
+            agent.post('/identityprovider')
                 .send({
                     email: 'test123@test.com',
                     password: '12test'

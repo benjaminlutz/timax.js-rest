@@ -55,7 +55,7 @@ app.use(jwt({
     secret: config.jwtSecret,
     userProperty: 'principal'
 }).unless({
-    path: ['/idp', '/']
+    path: ['/identityprovider', '/']
 }));
 
 // configure JSON Web Token (JWT) middleware error handler
