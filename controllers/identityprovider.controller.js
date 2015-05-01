@@ -28,16 +28,3 @@ exports.logon = function (req, res) {
         })
         .catch(errorFunc);
 };
-
-// TODO delete me later
-exports.create = function (req, res) {
-    var user = new User(req.body);
-
-    user.save(function (err, user) {
-        if (err) {
-            return res.sendStatus(500);
-        } else {
-            res.json(user);
-        }
-    });
-};
