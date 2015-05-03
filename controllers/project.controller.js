@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
  *
  * @param req the request.
  * @param res the response.
+ * @param next the next callback.
  */
 exports.list = function (req, res, next) {
     Project.find().sort('project_id')
@@ -49,7 +50,28 @@ exports.create = function (req, res) {
  * @param next the next callback.
  */
 exports.addUserToProject = function (req, res, next) {
+    var project = req.project;
+
     res.json({
-        projectId: req.params.projectId
+        project: project
     });
+};
+
+/**
+ * Project middleware to load a Project by Id.
+ */
+exports.loadProjectByID = function (req, res, next, id) {
+    Project.findById(id).populate('users')
+        .then(function (project) {
+            if (project) {
+                req.project = project;
+                next();
+            } else {
+                next(new Error('failed to load project'));
+            }
+        })
+        .catch(function (err) {
+            req.log.error('Failed to load project ' + id);
+            next(err);
+        });
 };

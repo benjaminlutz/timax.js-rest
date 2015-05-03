@@ -25,4 +25,9 @@ module.exports = function (app) {
      * POST /project/:projectId/user
      */
     app.route('/project/:projectId/user').post(mustBe.atLeastManager, projectController.addUserToProject);
+
+    /**
+     * Param middleware to load a Project by Id.
+     */
+    app.param('projectId', projectController.loadProjectByID);
 };
