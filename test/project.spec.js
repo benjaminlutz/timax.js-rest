@@ -44,7 +44,7 @@ describe('Project resource', function () {
     describe('POST /project', function () {
         it('should create a new project', function (done) {
             agent.post('/project')
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
                 .send({
                     project_id: 'PR456',
                     description: 'The test project II'
@@ -62,7 +62,7 @@ describe('Project resource', function () {
 
         it('should NOT be possible to save an project without project_id', function (done) {
             agent.post('/project')
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
                 .send({
                     description: 'The test project III'
                 })
