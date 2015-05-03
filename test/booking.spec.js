@@ -5,9 +5,9 @@ var request = require('supertest'),
     agent = request.agent(app),
     testUtil = require('./test.utils');
 
-describe('BookingRoute', function () {
+describe('Booking resource', function () {
 
-    describe('Booking dummy route', function () {
+    describe('GET /booking', function () {
         it('should return a dummy text', function (done) {
             agent.get('/booking')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))

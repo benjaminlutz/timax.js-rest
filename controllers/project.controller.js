@@ -146,10 +146,10 @@ exports.removeUserFromProject = function (req, res) {
 };
 
 /**
- * Project middleware to load a Project by Id.
+ * Project middleware to load a project by id.
  */
 exports.loadProjectByID = function (req, res, next, id) {
-    var errorMessage = 'Failed to load project ' + id;
+    var errorMessage = 'Failed to load project by id: ' + id;
 
     Project.findById(id).populate('users')
         .then(function (project) {
