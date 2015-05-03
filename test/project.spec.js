@@ -21,7 +21,7 @@ describe('Project resource', function () {
         });
 
         project = new Project({
-            project_id: 'PR123',
+            project_id: 'P00123',
             description: 'The test project'
         });
 
@@ -45,7 +45,7 @@ describe('Project resource', function () {
             agent.post('/project')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
                 .send({
-                    project_id: 'PR456',
+                    project_id: 'P00456',
                     description: 'The test project II'
                 })
                 .expect(200)
@@ -59,10 +59,40 @@ describe('Project resource', function () {
                 });
         });
 
+        it('should NOT be possible to save an project with project_id that is already in use', function (done) {
+            agent.post('/project')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
+                .send({
+                    project_id: 'P00123',
+                    description: 'The test project III'
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Could not create project');
+                    done();
+                });
+        });
+
         it('should NOT be possible to save an project without project_id', function (done) {
             agent.post('/project')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
                 .send({
+                    description: 'The test project III'
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Could not create project');
+                    done();
+                });
+        });
+
+        it('should NOT be possible to save an project with project_id that does not match the pattern ^P00[0-9]{3}', function (done) {
+            agent.post('/project')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
+                .send({
+                    project_id: 'A00456',
                     description: 'The test project III'
                 })
                 .expect(400)
@@ -80,7 +110,7 @@ describe('Project resource', function () {
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
                 .expect(200)
                 .end(function (err, response) {
-                    expect(response.body.project_id).toEqual('PR123');
+                    expect(response.body.project_id).toEqual('P00123');
                     expect(response.body.description).toEqual('The test project');
                     done();
                 });
@@ -92,7 +122,7 @@ describe('Project resource', function () {
             agent.put('/project/' + project._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
                 .send({
-                    project_id: 'PR77',
+                    project_id: 'P00077',
                     description: 'my super test project'
                 })
                 .expect(200)
@@ -100,7 +130,7 @@ describe('Project resource', function () {
                     expect(err).toBeNull();
 
                     Project.findOne().then(function (updatedProject) {
-                        expect(updatedProject.project_id).toEqual('PR77');
+                        expect(updatedProject.project_id).toEqual('P00077');
                         expect(updatedProject.description).toEqual('my super test project');
                         done();
                     });
@@ -131,7 +161,7 @@ describe('Project resource', function () {
                 .expect(200)
                 .end(function (err, response) {
                     var project = response.body[0];
-                    expect(project.project_id).toEqual('PR123');
+                    expect(project.project_id).toEqual('P00123');
                     expect(project.description).toEqual('The test project');
                     done();
                 });

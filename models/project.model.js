@@ -8,6 +8,7 @@ var ProjectSchema = new Schema({
         type: String,
         trim: true,
         required: true,
+        match: /^P00[0-9]{3}/,
         index: {
             unique: true
         }
