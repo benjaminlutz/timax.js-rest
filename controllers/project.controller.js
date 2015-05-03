@@ -50,28 +50,40 @@ exports.create = function (req, res) {
  * @param next the next callback.
  */
 exports.addUserToProject = function (req, res, next) {
-    var project = req.project;
+    var userId = req.body.userId,
+        project = req.project;
 
-    res.json({
-        project: project
-    });
+    project.users.push(userId);
+
+    project.saveAsync()
+        .spread(function (savedProject) {
+            res.json(savedProject);
+        })
+        .catch(function (err) {
+            req.log.error(err, 'Could not add user to project');
+            res.status(400).send({
+                error: err
+            });
+        });
 };
 
 /**
  * Project middleware to load a Project by Id.
  */
 exports.loadProjectByID = function (req, res, next, id) {
+    var errorMessage = 'Failed to load project ' + id;
+
     Project.findById(id).populate('users')
         .then(function (project) {
             if (project) {
                 req.project = project;
                 next();
             } else {
-                next(new Error('failed to load project'));
+                next(new Error(errorMessage));
             }
         })
         .catch(function (err) {
-            req.log.error('Failed to load project ' + id);
+            req.log.error(errorMessage);
             next(err);
         });
 };
