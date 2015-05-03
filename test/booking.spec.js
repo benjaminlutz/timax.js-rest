@@ -3,7 +3,7 @@
 var request = require('supertest'),
     app = require('../app'),
     agent = request.agent(app),
-    testUtil = require('./test.utils');
+    testUtil = require('./test.util');
 
 describe('Booking resource', function () {
 
