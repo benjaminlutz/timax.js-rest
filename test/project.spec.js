@@ -68,7 +68,7 @@ describe('Project resource', function () {
                 .expect(400)
                 .end(function (err, response) {
                     expect(err).toBeDefined();
-                    expect(response.body.error.message).toEqual('Project validation failed');
+                    expect(response.body.error.message).toEqual('Could not create project');
                     done();
                 });
         });
