@@ -35,7 +35,8 @@
     "express-jwt": "3.0.0",
     "mongoose": "4.0.1",
     "bcrypt": "0.8.2",
-    "bluebird": "2.9.25"
+    "bluebird": "2.9.25",
+    "cors": "2.6.0"
   },
   "devDependencies": {
     "grunt": "0.4.5",

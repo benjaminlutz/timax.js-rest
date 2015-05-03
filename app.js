@@ -3,6 +3,7 @@
 var Q = require('bluebird'),
     express = require('express'),
     bodyParser = require('body-parser'),
+    cors = require('cors'),
     path = require('path'),
     fs = require('fs'),
     bunyan = require('bunyan'),
@@ -42,13 +43,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// configure CORS header
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', '*, X-Requested-With, X-Prototype-Version, X-CSRF-Token, Content-Type, Authorization');
-    next();
-});
+// configure CORS
+app.use(cors());
 
 // configure JSON Web Token (JWT) middleware
 app.use(jwt({
