@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    mongoosePages = require('mongoose-pages');
 
 var ProjectSchema = new Schema({
     project_id: {
@@ -32,5 +33,7 @@ var ProjectSchema = new Schema({
         default: Date.now
     }
 });
+
+mongoosePages.skip(ProjectSchema);
 
 module.exports = mongoose.model('Project', ProjectSchema);

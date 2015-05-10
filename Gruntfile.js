@@ -15,7 +15,9 @@ module.exports = function (grunt) {
                 files: watchFiles.serverJS,
                 tasks: ['jshint'],
                 options: {
-                    livereload: true
+                    livereload: {
+                        port: 9011
+                    }
                 }
             }
         },

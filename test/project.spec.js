@@ -160,7 +160,7 @@ describe('Project resource', function () {
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
                 .expect(200)
                 .end(function (err, response) {
-                    var project = response.body[0];
+                    var project = response.body.documents[0];
                     expect(project.project_id).toEqual('P00123');
                     expect(project.description).toEqual('The test project');
                     done();
