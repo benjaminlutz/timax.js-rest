@@ -2,9 +2,9 @@
 
 var jwtHelper = require('../helpers/jwt.helper');
 
-exports.createTokenAndAuthHeaderFor = function (role) {
+exports.createTokenAndAuthHeaderFor = function (role, userEmail) {
     var user = {
-            email: 'hans.wurst@cma.com',
+            email: userEmail || 'hans.wurst@cma.com',
             firstName: 'Hans',
             lastName: 'Wurst',
             role: role
