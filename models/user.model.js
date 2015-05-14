@@ -43,6 +43,12 @@ var UserSchema = new Schema({
     }
 });
 
+UserSchema.index({
+    firstName: 'text',
+    lastName: 'text',
+    email: 'text'
+});
+
 /**
  * Middleware, which will be called before the model will be saved.
  *
