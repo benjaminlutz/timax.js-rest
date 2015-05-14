@@ -44,7 +44,7 @@ exports.search = function (req, res, next) {
 exports.listProjectsByUser = function (req, res, next) {
     var user = req.user;
 
-    if (req.principal.role === 'user' && req.principal.email !== req.user.email) {
+    if ((req.principal.role === 'user') && (req.user._id != req.principal._id)) {
         next(new Error('Not authorized'));
     }
 

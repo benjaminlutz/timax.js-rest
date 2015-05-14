@@ -82,7 +82,7 @@ describe('User resource', function () {
     describe('GET /user/:userId/project', function () {
         it('should return all projects for the given user', function (done) {
             agent.get('/user/' + user._id + '/project')
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user.email))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user._id))
                 .expect(200)
                 .end(function (err, response) {
                     expect(err).toBeNull();
