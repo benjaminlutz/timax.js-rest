@@ -110,7 +110,7 @@ exports.addUserToProject = function (req, res, next) {
     var userId = req.body.userId,
         project = req.project;
 
-    project.users.push(userId);
+    project.users.addToSet(userId);
 
     project.saveAsync()
         .spread(function (savedProject) {
