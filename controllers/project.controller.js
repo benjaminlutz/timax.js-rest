@@ -89,14 +89,14 @@ exports.delete = function (req, res, next) {
 exports.list = function (req, res, next) {
     var page = req.query.page;
 
-    Project.findPaginated({}, null, {sort: {'project_id': 'ascending'}}, function (err, result) {
-        if (err) {
+    Project.findAllPaginated(page)
+        .then(function (projects) {
+            res.json(projects);
+        })
+        .catch(function (err) {
             err.message('Could not list all projects');
             next(err);
-        }
-
-        res.json(result);
-    }, 10, page);
+        });
 };
 
 /**
