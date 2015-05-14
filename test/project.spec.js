@@ -188,18 +188,15 @@ describe('Project resource', function () {
         });
     });
 
-    describe('DELETE /project/:projectId/user', function () {
+    describe('DELETE /project/:projectId/user/:userId', function () {
         it('should remove a user from the project', function (done) {
             project.users.push(user._id);
             project.save(function (err, savedProject) {
                 project = savedProject;
                 expect(project.users.length).toBe(1);
 
-                agent.delete('/project/' + project._id + '/user')
+                agent.delete('/project/' + project._id + '/user/' + user._id)
                     .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
-                    .send({
-                        userId: user._id
-                    })
                     .expect(200)
                     .end(function (err) {
                         expect(err).toBeNull();

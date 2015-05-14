@@ -131,7 +131,7 @@ exports.addUserToProject = function (req, res, next) {
  * @param next the next callback.
  */
 exports.removeUserFromProject = function (req, res, next) {
-    var userId = req.body.userId,
+    var userId = req.params.userId,
         project = req.project;
 
     project.users.pull(userId);

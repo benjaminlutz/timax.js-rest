@@ -38,7 +38,7 @@ module.exports = function (app) {
     /**
      * Removes user from project.
      */
-    app.route('/project/:projectId/user').delete(mustBe.atLeastManager, projectController.removeUserFromProject);
+    app.route('/project/:projectId/user/:userId').delete(mustBe.atLeastManager, projectController.removeUserFromProject);
 
     /**
      * Param middleware to load a project by id.
