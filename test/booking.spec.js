@@ -3,19 +3,122 @@
 var request = require('supertest'),
     app = require('../app'),
     agent = request.agent(app),
-    testUtil = require('./test.util');
+    testUtil = require('./test.util'),
+    mongoose = require('mongoose'),
+    Project = mongoose.model('Project'),
+    User = mongoose.model('User'),
+    Booking = mongoose.model('Booking');
+
+var project, user, booking;
 
 describe('Booking resource', function () {
 
-    describe('GET /booking', function () {
-        it('should return a dummy text', function (done) {
-            agent.get('/booking')
+    beforeEach(function (done) {
+        user = new User({
+            firstName: 'Thorsten',
+            lastName: 'Tester',
+            email: 'test@test.com',
+            password: '12test'
+        });
+
+        project = new Project({
+            project_id: 'P00123',
+            description: 'The test project'
+        });
+
+        booking = new Booking({
+            start: new Date(2015, 5, 24, 8, 30, 0),
+            end: new Date(2015, 5, 24, 10, 0, 0),
+            description: 'My first booking...'
+        });
+
+        user.save(function (err, savedUser) {
+            user = savedUser;
+            project.save(function (err, savedProject) {
+                project = savedProject;
+                booking.user = savedUser;
+                booking.project = savedProject;
+                booking.save(function (err, savedBooking) {
+                    booking = savedBooking;
+                    done();
+                });
+            });
+        });
+    });
+
+    afterEach(function (done) {
+        Booking.remove().exec();
+        Project.remove().exec();
+        User.remove().exec();
+        done();
+    });
+
+    describe('POST /booking', function () {
+        it('should create a new booking', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .send({
+                    start: new Date(2015, 5, 24, 14, 30, 0),
+                    end: new Date(2015, 5, 24, 16, 0, 0),
+                    description: 'My second booking...'
+                })
+                .expect(200)
+                .end(function (err) {
+                    expect(err).toBeNull();
+
+                    Booking.find().then(function (bookings) {
+                        expect(bookings.length).toBe(2);
+                        done();
+                    });
+                });
+        });
+    });
+
+    describe('GET /booking/:bookingId', function () {
+        it('should return the booking with the given id', function (done) {
+            agent.get('/booking/' + booking._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
                 .expect(200)
                 .end(function (err, response) {
-                    expect(response.body).toEqual({hello: 'Hans'});
+                    expect(response.body.description).toEqual('My first booking...');
                     done();
                 });
         });
     });
+
+    describe('PUT /booking/:bookingId', function () {
+        it('should update the booking', function (done) {
+            agent.put('/booking/' + booking._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .send({
+                    description: 'My updated booking...'
+                })
+                .expect(200)
+                .end(function (err) {
+                    expect(err).toBeNull();
+
+                    Booking.findOne().then(function (updatedBooking) {
+                        expect(updatedBooking.description).toEqual('My updated booking...');
+                        done();
+                    });
+                });
+        });
+    });
+
+    describe('DELETE /booking/:bookingId', function () {
+        it('should delete the booking', function (done) {
+            agent.delete('/booking/' + booking._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .expect(200)
+                .end(function (err) {
+                    expect(err).toBeNull();
+
+                    Booking.find().then(function (bookings) {
+                        expect(bookings.length).toBe(0);
+                        done();
+                    });
+                });
+        });
+    });
+
 });

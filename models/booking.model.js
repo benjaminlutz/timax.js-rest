@@ -1,7 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+var Q = require('bluebird'),
+    mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    mongoosePages = require('mongoose-pages');
 
 var BookingSchema = new Schema({
     start: {
@@ -31,5 +33,27 @@ var BookingSchema = new Schema({
         default: Date.now
     }
 });
+
+mongoosePages.skip(BookingSchema);
+
+/**
+ * Finds all Bookings and return them in a paginated way.
+ *
+ * @param page the page to return.
+ * @returns {*} a promise.
+ */
+BookingSchema.statics.findAllPaginated = function (page) {
+    var me = this;
+
+    return new Q(function (resolve, reject) {
+        me.findPaginated({}, null, {sort: {'start': 'descending'}}, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+
+            resolve(result);
+        }, 10, page);
+    });
+};
 
 module.exports = mongoose.model('Booking', BookingSchema);
