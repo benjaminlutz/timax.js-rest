@@ -27,14 +27,26 @@ describe('User resource', function () {
 
         user.save(function (err, savedUser) {
             user = savedUser;
+
+            User.on('index', function (err) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log('index created');
+                }
+            });
+
+            // ensure indexes, because they were created in the background...
+            User.ensureIndexes(function (err) {
+                if (err) {
+                    console.error(err);
+                }
+                done();
+            });
+
             project.users.push(savedUser);
             project.save(function (err, savedProject) {
                 project = savedProject;
-
-                // ensure indexes, because they were created in the background...
-                User.ensureIndexes(function (err) {
-                    done();
-                });
             });
         });
     });
