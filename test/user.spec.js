@@ -13,11 +13,6 @@ var user, project;
 describe('User resource', function () {
 
     beforeEach(function (done) {
-
-        User.ensureIndexes(function (err) {
-            if (err) return err;
-        });
-
         user = new User({
             firstName: 'Thorsten',
             lastName: 'Tester',
