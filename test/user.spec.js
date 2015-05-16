@@ -13,40 +13,36 @@ var user, project;
 describe('User resource', function () {
 
     beforeEach(function (done) {
-        user = new User({
-            firstName: 'Thorsten',
-            lastName: 'Tester',
-            email: 'test@test.com',
-            password: '12test'
-        });
 
-        project = new Project({
-            project_id: 'P00123',
-            description: 'The test project'
-        });
 
-        user.save(function (err, savedUser) {
-            user = savedUser;
+        User.collection.ensureIndex({
+            firstName: 'text',
+            lastName: 'text',
+            email: 'text'
+        }, function (error, res) {
+            if (error) {
+                return console.error('failed ensureIndex with error', error);
+            }
 
-            User.on('index', function (err) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log('index created');
-                }
+            user = new User({
+                firstName: 'Thorsten',
+                lastName: 'Tester',
+                email: 'test@test.com',
+                password: '12test'
             });
 
-            // ensure indexes, because they were created in the background...
-            User.ensureIndexes(function (err) {
-                if (err) {
-                    console.error(err);
-                }
-                done();
+            project = new Project({
+                project_id: 'P00123',
+                description: 'The test project'
             });
 
-            project.users.push(savedUser);
-            project.save(function (err, savedProject) {
-                project = savedProject;
+            user.save(function (err, savedUser) {
+                user = savedUser;
+                project.users.push(savedUser);
+                project.save(function (err, savedProject) {
+                    project = savedProject;
+                    done();
+                });
             });
         });
     });
