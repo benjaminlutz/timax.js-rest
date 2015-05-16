@@ -25,6 +25,7 @@ exports.search = function (req, res, next) {
         {
             score: {$meta: 'textScore'}
         })
+        .execAsync()
         .then(function (users) {
             res.json(users);
         })
