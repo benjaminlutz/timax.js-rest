@@ -30,7 +30,11 @@ describe('User resource', function () {
             project.users.push(savedUser);
             project.save(function (err, savedProject) {
                 project = savedProject;
-                done();
+
+                // ensure indexes, because they were created in the background...
+                User.ensureIndexes(function (err) {
+                    done();
+                });
             });
         });
     });
