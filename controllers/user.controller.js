@@ -15,13 +15,21 @@ var mongoose = require('mongoose'),
 exports.search = function (req, res, next) {
     var queryString = req.query.q;
 
-    User.find({$text: {$search: queryString}})
+    User.find({
+            $text: {$search: queryString}
+        },
+        {
+            score: {$meta: 'textScore'}
+        })
+        .sort(
+        {
+            score: {$meta: 'textScore'}
+        })
         .execAsync()
         .then(function (users) {
             res.json(users);
         })
         .catch(function (err) {
-            console.log(err);
             next(err);
         });
 };
