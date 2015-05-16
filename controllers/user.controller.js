@@ -30,7 +30,6 @@ exports.search = function (req, res, next) {
             res.json(users);
         })
         .catch(function (err) {
-            err.message('Could not search for user');
             next(err);
         });
 };
