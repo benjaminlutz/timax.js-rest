@@ -30,6 +30,7 @@ exports.search = function (req, res, next) {
             res.json(users);
         })
         .catch(function (err) {
+            console.log(err);
             next(err);
         });
 };

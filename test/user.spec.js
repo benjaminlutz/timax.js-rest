@@ -14,35 +14,28 @@ describe('User resource', function () {
 
     beforeEach(function (done) {
 
+        User.ensureIndexes(function (err) {
+            if (err) return err;
+        });
 
-        User.collection.ensureIndex({
-            firstName: 'text',
-            lastName: 'text',
-            email: 'text'
-        }, function (error, res) {
-            if (error) {
-                return console.error('failed ensureIndex with error', error);
-            }
+        user = new User({
+            firstName: 'Thorsten',
+            lastName: 'Tester',
+            email: 'test@test.com',
+            password: '12test'
+        });
 
-            user = new User({
-                firstName: 'Thorsten',
-                lastName: 'Tester',
-                email: 'test@test.com',
-                password: '12test'
-            });
+        project = new Project({
+            project_id: 'P00123',
+            description: 'The test project'
+        });
 
-            project = new Project({
-                project_id: 'P00123',
-                description: 'The test project'
-            });
-
-            user.save(function (err, savedUser) {
-                user = savedUser;
-                project.users.push(savedUser);
-                project.save(function (err, savedProject) {
-                    project = savedProject;
-                    done();
-                });
+        user.save(function (err, savedUser) {
+            user = savedUser;
+            project.users.push(savedUser);
+            project.save(function (err, savedProject) {
+                project = savedProject;
+                done();
             });
         });
     });
