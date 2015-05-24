@@ -158,7 +158,7 @@ exports.removeUserFromProject = function (req, res, next) {
 exports.loadProjectByID = function (req, res, next, id) {
     var errorMessage = 'Failed to load project by id: ' + id;
 
-    Project.findById(id).populate('users')
+    Project.findById(id).populate('users', '-password')
         .then(function (project) {
             if (project) {
                 req.project = project;

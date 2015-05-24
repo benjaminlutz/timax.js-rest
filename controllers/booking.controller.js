@@ -112,7 +112,7 @@ exports.list = function (req, res, next) {
 exports.loadBookingByID = function (req, res, next, id) {
     var errorMessage = 'Failed to load booking by id: ' + id;
 
-    Booking.findById(id).populate('user').populate('project')
+    Booking.findById(id).populate('user', '-password').populate('project')
         .then(function (booking) {
             if (booking) {
                 req.booking = booking;

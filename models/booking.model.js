@@ -52,7 +52,7 @@ BookingSchema.statics.findAllPaginated = function (page) {
             }
 
             resolve(result);
-        }, 10, page);
+        }, 10, page).populate('user', '-password').populate('project');
     });
 };
 
