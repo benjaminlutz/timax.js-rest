@@ -86,11 +86,12 @@ describe('Booking resource', function () {
     describe('POST /booking', function () {
         it('should create a new booking', function (done) {
             agent.post('/booking')
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
                     start: new Date(2015, 5, 24, 14, 30, 0),
                     end: new Date(2015, 5, 24, 16, 0, 0),
-                    description: 'My third booking...'
+                    description: 'My third booking...',
+                    project: project1._id
                 })
                 .expect(200)
                 .end(function (err) {
@@ -105,14 +106,66 @@ describe('Booking resource', function () {
 
         it('should not be possible to save a booking without a description', function (done) {
             agent.post('/booking')
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
-                    start: new Date(2015, 5, 24, 14, 30, 0),
-                    end: new Date(2015, 5, 24, 16, 0, 0)
+                    start: new Date(2015, 5, 25, 14, 30, 0),
+                    end: new Date(2015, 5, 25, 16, 0, 0),
+                    project: project1._id
                 })
-                .expect(401)
+                .expect(400)
                 .end(function (err) {
                     expect(err).toBeDefined();
+                    done();
+                });
+        });
+
+        it('should not be possible to save a booking with overlapping times at the beginning', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 24, 8, 0, 0),
+                    end: new Date(2015, 5, 24, 9, 0, 0),
+                    description: 'overlapping booking at the beginning',
+                    project: project1._id
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
+                    done();
+                });
+        });
+
+        it('should not be possible to save a booking with overlapping times in the middle', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 24, 9, 0, 0),
+                    end: new Date(2015, 5, 24, 9, 30, 0),
+                    description: 'overlapping booking in the middle',
+                    project: project1._id
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
+                    done();
+                });
+        });
+
+        it('should not be possible to save a booking with overlapping times at the end', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 24, 9, 30, 0),
+                    end: new Date(2015, 5, 24, 11, 0, 0),
+                    description: 'overlapping booking at the end',
+                    project: project1._id
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
                     done();
                 });
         });
