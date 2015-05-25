@@ -21,9 +21,21 @@ describe('Booking resource', function () {
             password: '12test'
         });
 
+        user2 = new User({
+            firstName: 'Manfred',
+            lastName: 'Mock',
+            email: 'manfred@mock.com',
+            password: '45test'
+        });
+
         project1 = new Project({
             project_id: 'P00123',
             description: 'The test project'
+        });
+
+        project2 = new Project({
+            project_id: 'P00789',
+            description: 'The test project II'
         });
 
         booking1 = new Booking({
@@ -32,15 +44,33 @@ describe('Booking resource', function () {
             description: 'My first booking...'
         });
 
-        user1.save(function (err, savedUser) {
-            user1 = savedUser;
-            project1.save(function (err, savedProject) {
-                project1 = savedProject;
-                booking1.user = savedUser;
-                booking1.project = savedProject;
-                booking1.save(function (err, savedBooking) {
-                    booking1 = savedBooking;
-                    done();
+        booking2 = new Booking({
+            start: new Date(2015, 5, 24, 10, 30, 0),
+            end: new Date(2015, 5, 24, 11, 0, 0),
+            description: 'My second booking...'
+        });
+
+        // TODO refactor me
+        user1.save(function (err, savedUser1) {
+            user1 = savedUser1;
+            user2.save(function (err, savedUser2) {
+                user2 = savedUser2;
+                project1.save(function (err, savedProject1) {
+                    project1 = savedProject1;
+                    project2.save(function (err, savedProject2) {
+                        project2 = savedProject2;
+                        booking1.user = user1;
+                        booking1.project = project1;
+                        booking2.user = user2;
+                        booking2.project = project2;
+                        booking1.save(function (err, savedBooking1) {
+                            booking1 = savedBooking1;
+                            booking2.save(function (err, savedBooking2) {
+                                booking2 = savedBooking2;
+                                done();
+                            });
+                        });
+                    });
                 });
             });
         });
@@ -60,14 +90,14 @@ describe('Booking resource', function () {
                 .send({
                     start: new Date(2015, 5, 24, 14, 30, 0),
                     end: new Date(2015, 5, 24, 16, 0, 0),
-                    description: 'My second booking...'
+                    description: 'My third booking...'
                 })
                 .expect(200)
                 .end(function (err) {
                     expect(err).toBeNull();
 
                     Booking.find().then(function (bookings) {
-                        expect(bookings.length).toBe(2);
+                        expect(bookings.length).toBe(3);
                         done();
                     });
                 });
@@ -128,7 +158,7 @@ describe('Booking resource', function () {
                     expect(err).toBeNull();
 
                     Booking.find().then(function (bookings) {
-                        expect(bookings.length).toBe(0);
+                        expect(bookings.length).toBe(1);
                         done();
                     });
                 });
@@ -141,8 +171,36 @@ describe('Booking resource', function () {
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
                 .expect(200)
                 .end(function (err, response) {
-                    var booking = response.body.documents[0];
-                    expect(booking.description).toEqual('My first booking...');
+                    var bookings = response.body.documents;
+                    expect(bookings.length).toBe(2);
+                    expect(bookings[0].description).toEqual('My second booking...');
+                    expect(bookings[1].description).toEqual('My first booking...');
+                    done();
+                });
+        });
+
+        it('should return an array with all bookings of a project when I send the project id and have at least the role manager', function (done) {
+            agent.get('/booking/?project=' + project1._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .expect(200)
+                .end(function (err, response) {
+                    var bookings = response.body.documents;
+                    expect(bookings.length).toBe(1);
+                    expect(bookings[0].description).toEqual('My first booking...');
+                    done();
+                });
+        });
+
+        it('should return an array with all bookings of the current user when I send an empty query string and have the role user', function (done) {
+            agent.get('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .expect(200)
+                .end(function (err, response) {
+                    console.log(err);
+
+                    var bookings = response.body.documents;
+                    expect(bookings.length).toBe(1);
+                    expect(bookings[0].description).toEqual('My first booking...');
                     done();
                 });
         });
