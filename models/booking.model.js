@@ -7,15 +7,17 @@ var Q = require('bluebird'),
 
 var BookingSchema = new Schema({
     start: {
-        type: Date
+        type: Date,
+        required: true
     },
     end: {
-        type: Date
+        type: Date,
+        required: true
     },
     description: {
         type: String,
         trim: true,
-        default: ''
+        required: true
     },
     user: {
         type: Schema.ObjectId,

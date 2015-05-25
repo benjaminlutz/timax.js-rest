@@ -89,7 +89,8 @@ exports.delete = function (req, res, next) {
  * @param next the next callback.
  */
 exports.list = function (req, res, next) {
-    var page = req.query.page;
+    var page = req.query.page,
+        projectId = req.query.project;
 
     Booking.findAllPaginated(page)
         .then(function (bookings) {

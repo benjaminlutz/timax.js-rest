@@ -72,6 +72,20 @@ describe('Booking resource', function () {
                     });
                 });
         });
+
+        it('should not be possible to save a booking without a description', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .send({
+                    start: new Date(2015, 5, 24, 14, 30, 0),
+                    end: new Date(2015, 5, 24, 16, 0, 0)
+                })
+                .expect(401)
+                .end(function (err) {
+                    expect(err).toBeDefined();
+                    done();
+                });
+        });
     });
 
     describe('GET /booking/:bookingId', function () {
@@ -117,6 +131,19 @@ describe('Booking resource', function () {
                         expect(bookings.length).toBe(0);
                         done();
                     });
+                });
+        });
+    });
+
+    describe('GET /booking?<query string>', function () {
+        it('should return an array with all bookings when I send an empty query string and have at least the role manager', function (done) {
+            agent.get('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('manager'))
+                .expect(200)
+                .end(function (err, response) {
+                    var booking = response.body.documents[0];
+                    expect(booking.description).toEqual('My first booking...');
+                    done();
                 });
         });
     });
