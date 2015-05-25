@@ -9,37 +9,37 @@ var request = require('supertest'),
     User = mongoose.model('User'),
     Booking = mongoose.model('Booking');
 
-var project, user, booking;
+var project1, project2, user1, user2, booking1, booking2;
 
 describe('Booking resource', function () {
 
     beforeEach(function (done) {
-        user = new User({
+        user1 = new User({
             firstName: 'Thorsten',
             lastName: 'Tester',
             email: 'test@test.com',
             password: '12test'
         });
 
-        project = new Project({
+        project1 = new Project({
             project_id: 'P00123',
             description: 'The test project'
         });
 
-        booking = new Booking({
+        booking1 = new Booking({
             start: new Date(2015, 5, 24, 8, 30, 0),
             end: new Date(2015, 5, 24, 10, 0, 0),
             description: 'My first booking...'
         });
 
-        user.save(function (err, savedUser) {
-            user = savedUser;
-            project.save(function (err, savedProject) {
-                project = savedProject;
-                booking.user = savedUser;
-                booking.project = savedProject;
-                booking.save(function (err, savedBooking) {
-                    booking = savedBooking;
+        user1.save(function (err, savedUser) {
+            user1 = savedUser;
+            project1.save(function (err, savedProject) {
+                project1 = savedProject;
+                booking1.user = savedUser;
+                booking1.project = savedProject;
+                booking1.save(function (err, savedBooking) {
+                    booking1 = savedBooking;
                     done();
                 });
             });
@@ -90,7 +90,7 @@ describe('Booking resource', function () {
 
     describe('GET /booking/:bookingId', function () {
         it('should return the booking with the given id', function (done) {
-            agent.get('/booking/' + booking._id)
+            agent.get('/booking/' + booking1._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
                 .expect(200)
                 .end(function (err, response) {
@@ -102,7 +102,7 @@ describe('Booking resource', function () {
 
     describe('PUT /booking/:bookingId', function () {
         it('should update the booking', function (done) {
-            agent.put('/booking/' + booking._id)
+            agent.put('/booking/' + booking1._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
                 .send({
                     description: 'My updated booking...'
@@ -121,7 +121,7 @@ describe('Booking resource', function () {
 
     describe('DELETE /booking/:bookingId', function () {
         it('should delete the booking', function (done) {
-            agent.delete('/booking/' + booking._id)
+            agent.delete('/booking/' + booking1._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
                 .expect(200)
                 .end(function (err) {

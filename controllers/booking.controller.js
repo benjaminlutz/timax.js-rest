@@ -90,9 +90,18 @@ exports.delete = function (req, res, next) {
  */
 exports.list = function (req, res, next) {
     var page = req.query.page,
-        projectId = req.query.project;
+        projectId = req.query.project,
+        queryObject = {};
 
-    Booking.findAllPaginated(page)
+    if (req.principal.role === 'user') {
+        queryObject.user = req.principal._id;
+    }
+
+    if (projectId !== undefined && projectId !== '') {
+        queryObject.project = projectId;
+    }
+
+    Booking.findAllPaginated(page, queryObject)
         .then(function (bookings) {
             res.json(bookings);
         })

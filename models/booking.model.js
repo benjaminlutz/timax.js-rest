@@ -42,13 +42,14 @@ mongoosePages.skip(BookingSchema);
  * Finds all Bookings and return them in a paginated way.
  *
  * @param page the page to return.
+ * @param queryObject the query object.
  * @returns {*} a promise.
  */
-BookingSchema.statics.findAllPaginated = function (page) {
+BookingSchema.statics.findAllPaginated = function (page, queryObject) {
     var me = this;
 
     return new Q(function (resolve, reject) {
-        me.findPaginated({}, null, {sort: {'start': 'descending'}}, function (err, result) {
+        me.findPaginated(queryObject, null, {sort: {'start': 'descending'}}, function (err, result) {
             if (err) {
                 reject(err);
             }
