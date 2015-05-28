@@ -47,7 +47,7 @@ BookingSchema.path('end').validate(function (value, done) {
     }
 
     // end date must be greater than start date
-    if (this.start > this.end) {
+    if (this.start >= this.end) {
         var err = new Error('End date must be greater than start date.');
         done(err);
     }

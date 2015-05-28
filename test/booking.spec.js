@@ -133,6 +133,21 @@ describe('Booking resource', function () {
                 });
         });
 
+        it('should not be possible to save a booking where start date is equal to end date', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 24, 8, 30, 0),
+                    end: new Date(2015, 5, 24, 10, 0, 0),
+                    project: project1._id
+                })
+                .expect(400)
+                .end(function (err) {
+                    expect(err).toBeDefined();
+                    done();
+                });
+        });
+
         it('should not be possible to save a booking with overlapping times at the beginning', function (done) {
             agent.post('/booking')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
