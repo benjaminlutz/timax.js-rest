@@ -39,13 +39,20 @@ var BookingSchema = new Schema({
 mongoosePages.skip(BookingSchema);
 
 /**
- * Validation that bookings can not overlap.
+ * Validation of start and end of bookings.
  */
 BookingSchema.path('end').validate(function (value, done) {
     if (!this.isModified('start') || !this.isModified('end')) {
         done();
     }
 
+    // end date must be greater than start date
+    if (this.start > this.end) {
+        var err = new Error('End date must be greater than start date.');
+        done(err);
+    }
+
+    // overlapping bookings are not allowed
     this.model('Booking').count({
         project: this.project,
         user: this.user,

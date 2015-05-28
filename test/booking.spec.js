@@ -50,7 +50,6 @@ describe('Booking resource', function () {
             description: 'My second booking...'
         });
 
-        // TODO refactor me
         user1.save(function (err, savedUser1) {
             user1 = savedUser1;
             user2.save(function (err, savedUser2) {
@@ -110,6 +109,21 @@ describe('Booking resource', function () {
                 .send({
                     start: new Date(2015, 5, 25, 14, 30, 0),
                     end: new Date(2015, 5, 25, 16, 0, 0),
+                    project: project1._id
+                })
+                .expect(400)
+                .end(function (err) {
+                    expect(err).toBeDefined();
+                    done();
+                });
+        });
+
+        it('should not be possible to save a booking where start date is greater than end date', function (done) {
+            agent.post('/booking')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 26, 20, 30, 0),
+                    end: new Date(2015, 5, 26, 16, 0, 0),
                     project: project1._id
                 })
                 .expect(400)
