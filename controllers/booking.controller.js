@@ -16,29 +16,14 @@ exports.create = function (req, res, next) {
 
     booking.user = req.principal._id;
 
-    Booking.find({
-        project: booking.project,
-        user: booking.user,
-        start: {'$lt': booking.end},
-        end: {'$gt': booking.start}
-    })
-        .then(function (foundBooking) {
-            console.log(foundBooking);
-            if (foundBooking.length > 0) {
-                var error = new Error('Overlapping bookings not allowed.');
-                error.status = 400;
-                next(error);
-            } else {
-                booking.saveAsync()
-                    .spread(function (savedBooking) {
-                        res.json(savedBooking);
-                    })
-                    .catch(function (err) {
-                        err.message = 'Could not create booking';
-                        err.status = 400;
-                        next(err);
-                    });
-            }
+    booking.saveAsync()
+        .spread(function (savedBooking) {
+            res.json(savedBooking);
+        })
+        .catch(function (err) {
+            err.message = 'Could not create booking';
+            err.status = 400;
+            next(err);
         });
 };
 

@@ -39,6 +39,28 @@ var BookingSchema = new Schema({
 mongoosePages.skip(BookingSchema);
 
 /**
+ * Validation that bookings can not overlap.
+ */
+BookingSchema.path('end').validate(function (value, done) {
+    if (!this.isModified('start') || !this.isModified('end')) {
+        done();
+    }
+
+    this.model('Booking').count({
+        project: this.project,
+        user: this.user,
+        start: {'$lt': this.end},
+        end: {'$gt': this.start}
+    }, function (err, count) {
+        if (err) {
+            return done(err);
+        }
+        // if count is greater than zero -> invalidate
+        done(!count);
+    });
+}, 'Overlapping bookings are not allowed.');
+
+/**
  * Finds all Bookings and return them in a paginated way.
  *
  * @param page the page to return.

@@ -131,7 +131,7 @@ describe('Booking resource', function () {
                 .expect(400)
                 .end(function (err, response) {
                     expect(err).toBeDefined();
-                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
+                    expect(response.body.error.message).toEqual('Could not create booking');
                     done();
                 });
         });
@@ -148,7 +148,7 @@ describe('Booking resource', function () {
                 .expect(400)
                 .end(function (err, response) {
                     expect(err).toBeDefined();
-                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
+                    expect(response.body.error.message).toEqual('Could not create booking');
                     done();
                 });
         });
@@ -165,7 +165,7 @@ describe('Booking resource', function () {
                 .expect(400)
                 .end(function (err, response) {
                     expect(err).toBeDefined();
-                    expect(response.body.error.message).toEqual('Overlapping bookings not allowed.');
+                    expect(response.body.error.message).toEqual('Could not create booking');
                     done();
                 });
         });
@@ -186,7 +186,7 @@ describe('Booking resource', function () {
     describe('PUT /booking/:bookingId', function () {
         it('should update the booking', function (done) {
             agent.put('/booking/' + booking1._id)
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
                     description: 'My updated booking...'
                 })
@@ -194,10 +194,25 @@ describe('Booking resource', function () {
                 .end(function (err) {
                     expect(err).toBeNull();
 
-                    Booking.findOne().then(function (updatedBooking) {
+                    Booking.findOne({_id: booking1._id}).then(function (updatedBooking) {
                         expect(updatedBooking.description).toEqual('My updated booking...');
                         done();
                     });
+                });
+        });
+
+        it('should not be possible to update a booking with overlapping times', function (done) {
+            agent.put('/booking/' + booking1._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+                .send({
+                    start: new Date(2015, 5, 24, 9, 30, 0),
+                    end: new Date(2015, 5, 24, 11, 0, 0)
+                })
+                .expect(400)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Could not update booking');
+                    done();
                 });
         });
     });
