@@ -41,6 +41,22 @@ describe('User resource', function () {
         done();
     });
 
+    describe('GET /user', function () {
+        it('should return an array with all users when I have the role admin', function (done) {
+            agent.get('/user')
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('admin'))
+                .expect(200)
+                .end(function (err, response) {
+                    expect(err).toBeNull();
+                    expect(response.body.documents.length).toBe(1);
+                    expect(response.body.totalPages).toBe(1);
+                    expect(response.body.documents[0].email).toEqual('test@test.com');
+                    expect(response.body.documents[0].password).toBeUndefined();
+                    done();
+                });
+        });
+    });
+
     describe('GET /user/search?q=<search string>', function () {
         it('should be possible to search with the first name', function (done) {
             agent.get('/user/search?q=thorsten')

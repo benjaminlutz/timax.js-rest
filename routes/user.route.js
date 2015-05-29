@@ -6,6 +6,11 @@ var mustBe = require('../helpers/authorization.helper'),
 module.exports = function (app) {
 
     /**
+     * List all users.
+     */
+    app.route('/user').get(mustBe.admin, userController.list);
+    
+    /**
      * Searches for user.
      */
     app.route('/user/search').get(mustBe.atLeastManager, userController.search);

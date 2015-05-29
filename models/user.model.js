@@ -4,6 +4,7 @@ var Q = require('bluebird'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt'),
+    mongoosePages = require('mongoose-pages'),
     SALT_WORK_FACTOR = 10;
 
 var UserSchema = new Schema({
@@ -43,11 +44,19 @@ var UserSchema = new Schema({
     }
 });
 
+/**
+ * Text index to enable search for users by firstName, lastName or e-mail address.
+ */
 UserSchema.index({
     firstName: 'text',
     lastName: 'text',
     email: 'text'
 });
+
+/**
+ * Activate pagination plugin.
+ */
+mongoosePages.skip(UserSchema);
 
 /**
  * Middleware, which will be called before the model will be saved.
@@ -103,6 +112,26 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
  */
 UserSchema.statics.findByEMail = function (email) {
     return this.findOne({'email': {$regex: new RegExp('^' + email.toLowerCase(), 'i')}});
+};
+
+/**
+ * Finds all Users and return them in a paginated way.
+ *
+ * @param page the page to return.
+ * @returns {*} a promise.
+ */
+UserSchema.statics.findAllPaginated = function (page) {
+    var me = this;
+
+    return new Q(function (resolve, reject) {
+        me.findPaginated({}, '-password', {sort: {'firstName': 'ascending'}}, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+
+            resolve(result);
+        }, 10, page);
+    });
 };
 
 module.exports = mongoose.model('User', UserSchema);

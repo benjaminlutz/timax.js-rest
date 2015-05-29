@@ -6,6 +6,26 @@ var mongoose = require('mongoose'),
     _ = require('lodash');
 
 /**
+ * Returns an array with all users.
+ *
+ * @param req the request.
+ * @param res the response.
+ * @param next the next callback.
+ */
+exports.list = function (req, res, next) {
+    var page = req.query.page;
+
+    User.findAllPaginated(page)
+        .then(function (users) {
+            res.json(users);
+        })
+        .catch(function (err) {
+            err.message('Could not list all users');
+            next(err);
+        });
+};
+
+/**
  * Does a full text search over the compound index of the user.
  *
  * @param req the request.
