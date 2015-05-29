@@ -207,10 +207,21 @@ describe('Booking resource', function () {
     describe('GET /booking/:bookingId', function () {
         it('should return the booking with the given id', function (done) {
             agent.get('/booking/' + booking1._id)
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .expect(200)
                 .end(function (err, response) {
                     expect(response.body.description).toEqual('My first booking...');
+                    done();
+                });
+        });
+
+        it('should not be possible for an user to read a booking of another user', function (done) {
+            agent.get('/booking/' + booking1._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user2._id))
+                .expect(403)
+                .end(function (err, response) {
+                    expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Not Authorized to access booking.');
                     done();
                 });
         });
@@ -253,7 +264,7 @@ describe('Booking resource', function () {
     describe('DELETE /booking/:bookingId', function () {
         it('should delete the booking', function (done) {
             agent.delete('/booking/' + booking1._id)
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user'))
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .expect(200)
                 .end(function (err) {
                     expect(err).toBeNull();

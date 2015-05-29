@@ -136,3 +136,22 @@ exports.loadBookingByID = function (req, res, next, id) {
             next(err);
         });
 };
+
+/**
+ * Booking authorization middleware.
+ *
+ * @param req the request.
+ * @param res the response.
+ * @param next the next callback.
+ */
+exports.hasAuthorization = function (req, res, next) {
+    if (req.principal.role === 'user' && !req.booking.user._id.equals(req.principal._id)) {
+        res.status(403).json({
+            error: {
+                message: 'Not Authorized to access booking.'
+            }
+        });
+    } else {
+        next();
+    }
+};

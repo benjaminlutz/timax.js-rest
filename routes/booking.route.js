@@ -13,17 +13,17 @@ module.exports = function (app) {
     /**
      * Read a booking.
      */
-    app.route('/booking/:bookingId').get(mustBe.atLeastUser, bookingController.read);
+    app.route('/booking/:bookingId').get(mustBe.userOrAdmin, bookingController.hasAuthorization, bookingController.read);
 
     /**
      * Updates a booking.
      */
-    app.route('/booking/:bookingId').put(mustBe.atLeastUser, bookingController.update);
+    app.route('/booking/:bookingId').put(mustBe.userOrAdmin, bookingController.hasAuthorization, bookingController.update);
 
     /**
      * Deletes a booking.
      */
-    app.route('/booking/:bookingId').delete(mustBe.atLeastUser, bookingController.delete);
+    app.route('/booking/:bookingId').delete(mustBe.userOrAdmin, bookingController.hasAuthorization, bookingController.delete);
 
     /**
      * List all bookings.

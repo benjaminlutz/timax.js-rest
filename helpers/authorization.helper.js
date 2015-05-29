@@ -63,3 +63,20 @@ exports.admin = function (req, res, next) {
         errorFunc(res);
     }
 };
+
+/**
+ * Authorization middleware which checks that the user has the role user or admin.
+ *
+ * @param req the request.
+ * @param res the response.
+ * @param next the next callback.
+ */
+exports.userOrAdmin = function (req, res, next) {
+    var role = req.principal.role;
+
+    if (role === 'admin' || role ==='user') {
+        next();
+    } else {
+        errorFunc(res);
+    }
+};
