@@ -35,6 +35,9 @@ var ProjectSchema = new Schema({
     }
 });
 
+/**
+ * Activate pagination plugin.
+ */
 mongoosePages.skip(ProjectSchema);
 
 /**

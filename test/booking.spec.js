@@ -122,13 +122,15 @@ describe('Booking resource', function () {
             agent.post('/booking')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
-                    start: new Date(2015, 5, 26, 20, 30, 0),
-                    end: new Date(2015, 5, 26, 16, 0, 0),
+                    start: new Date(2015, 1, 26, 20, 30, 0),
+                    end: new Date(2015, 1, 26, 16, 0, 0),
+                    description: 'bad booking baby',
                     project: project1._id
                 })
                 .expect(400)
-                .end(function (err) {
+                .end(function (err, response) {
                     expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Could not create booking');
                     done();
                 });
         });
@@ -137,13 +139,15 @@ describe('Booking resource', function () {
             agent.post('/booking')
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
-                    start: new Date(2015, 5, 24, 8, 30, 0),
-                    end: new Date(2015, 5, 24, 10, 0, 0),
+                    start: new Date(2015, 1, 26, 8, 30, 0),
+                    end: new Date(2015, 1, 26, 8, 30, 0),
+                    description: 'bad booking baby',
                     project: project1._id
                 })
                 .expect(400)
-                .end(function (err) {
+                .end(function (err, response) {
                     expect(err).toBeDefined();
+                    expect(response.body.error.message).toEqual('Could not create booking');
                     done();
                 });
         });

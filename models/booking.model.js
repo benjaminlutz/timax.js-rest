@@ -36,23 +36,30 @@ var BookingSchema = new Schema({
     }
 });
 
+/**
+ * Activate pagination plugin.
+ */
 mongoosePages.skip(BookingSchema);
 
 /**
- * Validation of start and end of bookings.
+ * Validate that start date must be greater than end date.
+ */
+BookingSchema.path('start').validate(function (value, done) {
+    if (this.start >= this.end) {
+        done(false);
+    } else {
+        done(true);
+    }
+}, 'End date must be greater than start date.');
+
+/**
+ * Validate that no overlapping bookings are allowed.
  */
 BookingSchema.path('end').validate(function (value, done) {
-    if (!this.isModified('start') || !this.isModified('end')) {
-        done();
+    if (!this.isModified('start') && !this.isModified('end')) {
+        return done();
     }
 
-    // end date must be greater than start date
-    if (this.start >= this.end) {
-        var err = new Error('End date must be greater than start date.');
-        done(err);
-    }
-
-    // overlapping bookings are not allowed
     this.model('Booking').count({
         project: this.project,
         user: this.user,
