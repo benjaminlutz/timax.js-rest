@@ -45,11 +45,7 @@ mongoosePages.skip(BookingSchema);
  * Validate that start date must be greater than end date.
  */
 BookingSchema.path('start').validate(function (value, done) {
-    if (this.start >= this.end) {
-        done(false);
-    } else {
-        done(true);
-    }
+    done(this.start < this.end);
 }, 'End date must be greater than start date.');
 
 /**
@@ -57,7 +53,7 @@ BookingSchema.path('start').validate(function (value, done) {
  */
 BookingSchema.path('end').validate(function (value, done) {
     if (!this.isModified('start') && !this.isModified('end')) {
-        return done();
+        return done(true);
     }
 
     this.model('Booking').count({
@@ -67,7 +63,7 @@ BookingSchema.path('end').validate(function (value, done) {
         end: {'$gt': this.start}
     }, function (err, count) {
         if (err) {
-            return done(err);
+            return done(false);
         }
         // if count is greater than zero -> invalidate
         done(!count);
