@@ -18,6 +18,7 @@ exports.create = function (req, res, next) {
 
     booking.saveAsync()
         .spread(function (savedBooking) {
+            req.mubsub.publish('bookings', savedBooking);
             res.json(savedBooking);
         })
         .catch(function (err) {

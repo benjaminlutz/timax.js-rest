@@ -9,7 +9,8 @@ var Q = require('bluebird'),
     bunyan = require('bunyan'),
     config = require('./config'),
     jwt = require('express-jwt'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    mubsub = require('mubsub');
 
 // global promisify
 Q.promisifyAll(mongoose);
@@ -22,13 +23,22 @@ mongoose.connect(config.mongoDB, function (err) {
     if (err) {
         log.error(err, 'Could not connect to MongoDB!');
     } else {
-        log.info('Connected to: ' + config.mongoDB);
+        log.info('Connected to MongoDB: ' + config.mongoDB);
     }
 });
 
 // load all mongoose models
 fs.readdirSync(path.join(__dirname, 'models')).forEach(function (file) {
     require('./models/' + file);
+});
+
+// init mubsub client
+var mubsubclient = mubsub(config.mubsub);
+mubsubclient.on('connect', function () {
+    log.info('Connected mubsub client to: ' + config.mubsub);
+});
+mubsubclient.on('error', function (err) {
+    log.error(err, 'Could not connect mubsub client!');
 });
 
 // init express
@@ -64,6 +74,12 @@ app.use(function (err, req, res, next) {
             }
         });
     }
+});
+
+// init mubsub channel and make it accessible
+app.use(function(req, res, next) {
+    req.mubsub = mubsubclient.channel('bookings');
+    next();
 });
 
 // serve static content

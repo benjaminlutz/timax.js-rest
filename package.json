@@ -37,7 +37,8 @@
     "bcrypt": "0.8.3",
     "bluebird": "2.9.25",
     "cors": "2.6.0",
-    "mongoose-pages": "0.0.3"
+    "mongoose-pages": "0.0.3",
+    "mubsub": "1.0.4"
   },
   "devDependencies": {
     "grunt": "0.4.5",

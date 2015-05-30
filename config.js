@@ -12,6 +12,7 @@ var global_config = {
     environment: environment,
     port: 3000,
     mongoDB: 'mongodb://localhost/timaxjs',
+    mubsub: 'mongodb://localhost:27017/mubsub',
     jwtSecret: 'pL3aS3_ChAnG3_M3!',
     jwtExpiryTimeInMinutes: 600,
     logger: {
@@ -38,7 +39,8 @@ var dev_config = {};
  * Environment specific configuration for test environment.
  */
 var test_config = {
-    mongoDB: 'mongodb://localhost/timaxjs-test'
+    mongoDB: 'mongodb://localhost/timaxjs-test',
+    mubsub: 'mongodb://localhost:27017/mubsub-test'
 };
 
 /**
