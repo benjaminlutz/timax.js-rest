@@ -40,6 +40,10 @@ mubsubclient.on('connect', function () {
 mubsubclient.on('error', function (err) {
     log.error(err, 'Could not connect mubsub client!');
 });
+var channel = mubsubclient.channel('bookings');
+channel.on('error', function (err) {
+    log.error(err, 'Error on channel bookings.');
+});
 
 // init express
 var app = express();
@@ -76,9 +80,9 @@ app.use(function (err, req, res, next) {
     }
 });
 
-// init mubsub channel and make it accessible
+// make mubsub channel accessible
 app.use(function(req, res, next) {
-    req.mubsub = mubsubclient.channel('bookings');
+    req.mubsub = channel;
     next();
 });
 

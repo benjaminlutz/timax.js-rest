@@ -12,13 +12,20 @@ var mongoose = require('mongoose'),
  * @param next the next callback.
  */
 exports.create = function (req, res, next) {
-    var booking = new Booking(req.body);
+    var booking = new Booking(req.body),
+        mubsub = req.mubsub;
 
     booking.user = req.principal._id;
 
     booking.saveAsync()
         .spread(function (savedBooking) {
-            req.mubsub.publish('bookings', savedBooking);
+            mubsub.publish('bookings', {
+                start: savedBooking.start,
+                end: savedBooking.end,
+                user: savedBooking.user,
+                project: savedBooking.project,
+                description: savedBooking.description
+            });
             res.json(savedBooking);
         })
         .catch(function (err) {
