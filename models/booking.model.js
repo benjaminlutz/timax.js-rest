@@ -56,12 +56,19 @@ BookingSchema.path('end').validate(function (value, done) {
         return done(true);
     }
 
-    this.model('Booking').count({
+    var query = {
         project: this.project,
         user: this.user,
         start: {'$lt': this.end},
         end: {'$gt': this.start}
-    }, function (err, count) {
+    };
+
+    // if this is an update -> exclude the current booking
+    if (!this.isNew) {
+        query._id = {'$ne': this._id};
+    }
+
+    this.model('Booking').count(query, function (err, count) {
         if (err) {
             return done(false);
         }

@@ -9,7 +9,7 @@ var request = require('supertest'),
     User = mongoose.model('User'),
     Booking = mongoose.model('Booking');
 
-var project1, project2, user1, user2, booking1, booking2;
+var project1, project2, user1, user2, booking1, booking2, booking3;
 
 describe('Booking resource', function () {
 
@@ -50,6 +50,12 @@ describe('Booking resource', function () {
             description: 'My second booking...'
         });
 
+        booking3 = new Booking({
+            start: new Date(2015, 5, 24, 11, 0, 0),
+            end: new Date(2015, 5, 24, 13, 0, 0),
+            description: 'My third booking...'
+        });
+
         user1.save(function (err, savedUser1) {
             user1 = savedUser1;
             user2.save(function (err, savedUser2) {
@@ -62,11 +68,16 @@ describe('Booking resource', function () {
                         booking1.project = project1;
                         booking2.user = user2;
                         booking2.project = project2;
+                        booking3.user = user2;
+                        booking3.project = project2;
                         booking1.save(function (err, savedBooking1) {
                             booking1 = savedBooking1;
                             booking2.save(function (err, savedBooking2) {
                                 booking2 = savedBooking2;
-                                done();
+                                booking3.save(function (err, savedBooking3) {
+                                    booking3 = savedBooking3;
+                                    done();
+                                });
                             });
                         });
                     });
@@ -97,7 +108,7 @@ describe('Booking resource', function () {
                     expect(err).toBeNull();
 
                     Booking.find().then(function (bookings) {
-                        expect(bookings.length).toBe(3);
+                        expect(bookings.length).toBe(4);
                         done();
                     });
                 });
@@ -232,6 +243,7 @@ describe('Booking resource', function () {
             agent.put('/booking/' + booking1._id)
                 .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
                 .send({
+                    start: new Date(2015, 5, 24, 9, 30, 0),
                     description: 'My updated booking...'
                 })
                 .expect(200)
@@ -240,17 +252,18 @@ describe('Booking resource', function () {
 
                     Booking.findOne({_id: booking1._id}).then(function (updatedBooking) {
                         expect(updatedBooking.description).toEqual('My updated booking...');
+                        expect(updatedBooking.start).toEqual(new Date(2015, 5, 24, 9, 30, 0));
                         done();
                     });
                 });
         });
 
         it('should not be possible to update a booking with overlapping times', function (done) {
-            agent.put('/booking/' + booking1._id)
-                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user1._id))
+            agent.put('/booking/' + booking3._id)
+                .set('Authorization', testUtil.createTokenAndAuthHeaderFor('user', user2._id))
                 .send({
-                    start: new Date(2015, 5, 24, 9, 30, 0),
-                    end: new Date(2015, 5, 24, 11, 0, 0)
+                    start: new Date(2015, 5, 24, 10, 30, 0),
+                    end: new Date(2015, 5, 24, 16, 0, 0)
                 })
                 .expect(400)
                 .end(function (err, response) {
@@ -270,7 +283,7 @@ describe('Booking resource', function () {
                     expect(err).toBeNull();
 
                     Booking.find().then(function (bookings) {
-                        expect(bookings.length).toBe(1);
+                        expect(bookings.length).toBe(2);
                         done();
                     });
                 });
@@ -284,9 +297,10 @@ describe('Booking resource', function () {
                 .expect(200)
                 .end(function (err, response) {
                     var bookings = response.body.documents;
-                    expect(bookings.length).toBe(2);
-                    expect(bookings[0].description).toEqual('My second booking...');
-                    expect(bookings[1].description).toEqual('My first booking...');
+                    expect(bookings.length).toBe(3);
+                    expect(bookings[0].description).toEqual('My third booking...');
+                    expect(bookings[1].description).toEqual('My second booking...');
+                    expect(bookings[2].description).toEqual('My first booking...');
                     done();
                 });
         });
