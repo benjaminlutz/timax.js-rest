@@ -19,13 +19,18 @@ exports.create = function (req, res, next) {
 
     booking.saveAsync()
         .spread(function (savedBooking) {
-            mubsub.publish('bookings', {
-                start: savedBooking.start,
-                end: savedBooking.end,
-                user: savedBooking.user,
-                project: savedBooking.project,
-                description: savedBooking.description
-            });
+
+            Booking.findById(savedBooking._id).populate('user', '-password').populate('project')
+                .then(function (loadedBooking) {
+                    mubsub.publish('bookings', {
+                        start: loadedBooking.start,
+                        end: loadedBooking.end,
+                        user: loadedBooking.user.firstName + ' ' + loadedBooking.user.lastName,
+                        project: loadedBooking.project.project_id,
+                        description: loadedBooking.description
+                    });
+                });
+
             res.json(savedBooking);
         })
         .catch(function (err) {
