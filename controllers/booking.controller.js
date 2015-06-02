@@ -5,6 +5,25 @@ var mongoose = require('mongoose'),
     _ = require('lodash');
 
 /**
+ * Loads the booking by given id and creates a new mub sub message.
+ *
+ * @param mubsub the mubsub channel.
+ * @param bookingId the booking id.
+ */
+function sendMubSubMessage(mubsub, bookingId) {
+    Booking.findByIdPopulated(bookingId)
+        .then(function (booking) {
+            mubsub.publish('bookings', {
+                start: booking.start,
+                end: booking.end,
+                user: booking.user.firstName + ' ' + booking.user.lastName,
+                project: booking.project.project_id,
+                description: booking.description
+            });
+        });
+}
+
+/**
  * Creates a new Booking.
  *
  * @param req the request.
@@ -12,25 +31,13 @@ var mongoose = require('mongoose'),
  * @param next the next callback.
  */
 exports.create = function (req, res, next) {
-    var booking = new Booking(req.body),
-        mubsub = req.mubsub;
+    var booking = new Booking(req.body);
 
     booking.user = req.principal._id;
 
     booking.saveAsync()
         .spread(function (savedBooking) {
-
-            Booking.findById(savedBooking._id).populate('user', '-password').populate('project')
-                .then(function (loadedBooking) {
-                    mubsub.publish('bookings', {
-                        start: loadedBooking.start,
-                        end: loadedBooking.end,
-                        user: loadedBooking.user.firstName + ' ' + loadedBooking.user.lastName,
-                        project: loadedBooking.project.project_id,
-                        description: loadedBooking.description
-                    });
-                });
-
+            sendMubSubMessage(req.mubsub, savedBooking._id);
             res.json(savedBooking);
         })
         .catch(function (err) {
@@ -135,7 +142,7 @@ exports.list = function (req, res, next) {
 exports.loadBookingByID = function (req, res, next, id) {
     var errorMessage = 'Failed to load booking by id: ' + id;
 
-    Booking.findById(id).populate('user', '-password').populate('project')
+    Booking.findByIdPopulated(id)
         .then(function (booking) {
             if (booking) {
                 req.booking = booking;

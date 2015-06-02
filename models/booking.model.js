@@ -98,4 +98,13 @@ BookingSchema.statics.findAllPaginated = function (page, queryObject) {
     });
 };
 
+/**
+ * Finds a booking by id and returns it with populated user and project.
+ *
+ * @param bookingId the booking id.
+ */
+BookingSchema.statics.findByIdPopulated = function (bookingId) {
+    return this.findById(bookingId).populate('user', '-password').populate('project');
+};
+
 module.exports = mongoose.model('Booking', BookingSchema);
