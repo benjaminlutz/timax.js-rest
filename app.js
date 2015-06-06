@@ -1,5 +1,7 @@
 'use strict';
 
+// require('newrelic');
+
 var Q = require('bluebird'),
     express = require('express'),
     bodyParser = require('body-parser'),
