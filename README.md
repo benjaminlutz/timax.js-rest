@@ -10,7 +10,7 @@ timax.js - the REST services
 Make sure you have installed all these prerequisites on your machine.
 
 * Node.js - [Download & Install Node.js](http://www.nodejs.org/download/) and the npm package manager.
-* MongoDB - [Download & Install MongoDB](http://www.mongodb.org/downloads), and make sure it's running on the default port (27017).
+* MongoDB - [Download & Install MongoDB](http://www.mongodb.org/downloads) Version > 2.6, and make sure it's running on the default port (27017).
 
 * Grunt - You're going to use the [Grunt Task Runner](http://gruntjs.com/) to automate your development process, in order to install it make sure you've installed Node.js and npm, then install grunt globally using npm:
 
@@ -40,19 +40,30 @@ config.js
 
 file.
 
-*Important:* Please change the jwtSecret before you start the application for the first time!
-
 ## Start the application
 If everything is installed and configured, just type the following command to start the application:
 
 ```
-$ grunt
+$ node app.js
 ```
 
 Or if you want a nice formatted log output, then use the bunyan CLI tool:
 
 ```
+$ node app.js | bunyan
+```
+
+## Development
+If you need live reload then start:
+
+```
 $ grunt | bunyan
+```
+
+To run the tests:
+
+```
+$ grunt test | bunyan
 ```
 
 ## License
