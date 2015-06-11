@@ -40,6 +40,21 @@ config.js
 
 file.
 
+## Initialize the database with test data
+If you want to initialize the database with some test users, just type
+
+```
+$ node init.js
+```
+
+Then you can login as:
+
+User: user@test.com / 
+Manager: manager@test.com / 
+Admin: admin@test.com
+
+The password is for all three users: geheim
+
 ## Start the application
 If everything is installed and configured, just type the following command to start the application:
 
